@@ -1,0 +1,89 @@
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #47c967, #ee1616);
+
+    /* centrar todo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* 📦 tarjeta blanca tipo plataforma */
+.contenedor {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    width: 300px;
+
+    /* sombra suave */
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+/* título */
+h1 {
+    color: #333;
+}
+
+/* logo */
+.logo {
+    width: 90px;
+    margin: 10px;
+}
+
+/* input */
+input {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin: 10px;
+    width: 80%;
+}
+
+/* contenedor de avatares */
+.avatares {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+/* avatares */
+.avatares img {
+    width: 65px;
+    height: 65px;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 12px;
+
+    /* borde neón */
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #56d380, #ff00c8) 1;
+
+    transition: 0.3s;
+}
+
+/* hover */
+.avatares img:hover {
+    transform: scale(1.1);
+}
+
+/* seleccionado */
+.seleccionado {
+    box-shadow: 0 0 10px #acdd39, 0 0 20px #07f5d5;
+}
+
+/* botón */
+button {
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+
+    background: linear-gradient(45deg, #18a824, #f50f0f);
+    color: white;
+    font-size: 16px;
+}

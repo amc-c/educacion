@@ -1,0 +1,227 @@
+body {
+
+    margin: 0;
+    padding: 0;
+
+    font-family: Arial, sans-serif;
+
+    background:
+        linear-gradient(
+            180deg,
+            #87CEFA,
+            #E0F7FF
+        );
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+}
+
+.contenedor {
+
+    background: white;
+
+    width: 90%;
+    max-width: 750px;
+
+    padding: 40px;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* =========================
+    AVATAR
+========================= */
+
+.avatar {
+
+    width: 120px;
+    height: 120px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    margin-bottom: 20px;
+
+    border: 5px solid #4CAF50;
+
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+
+    animation: aparecerAvatar 0.8s ease-out;
+
+    transition: 0.3s;
+}
+
+.avatar:hover {
+
+    transform: scale(1.05);
+
+    box-shadow: 0 0 25px rgba(76, 175, 80, 0.8);
+}
+
+/* =========================
+    ANIMACIÓN ENTRADA
+========================= */
+
+@keyframes aparecerAvatar {
+
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* =========================
+    NIVELES AVATAR
+========================= */
+
+.avatar.nivel-basico {
+    border: 5px solid #4CAF50;
+}
+
+.avatar.nivel-medio {
+    border: 5px solid #FFC107;
+}
+
+.avatar.nivel-avanzado {
+    border: 5px solid #2196F3;
+}
+
+/* =========================
+    TEXTO
+========================= */
+
+h1 {
+
+    color: #1565C0;
+
+    font-size: 42px;
+
+    margin-bottom: 15px;
+}
+
+#mensaje {
+
+    font-size: 24px;
+
+    color: #444;
+
+    margin-bottom: 40px;
+}
+
+/* =========================
+    TARJETAS
+========================= */
+
+.tarjetas {
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 25px;
+
+    margin-bottom: 40px;
+}
+
+.tarjeta {
+
+    width: 160px;
+    height: 160px;
+
+    background: #FFF8DC;
+
+    border-radius: 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    font-size: 55px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.15);
+}
+
+.tarjeta:hover {
+
+    transform: scale(1.08);
+
+    background: #FFE082;
+}
+
+.tarjeta span {
+
+    margin-top: 10px;
+
+    font-size: 24px;
+
+    color: #333;
+}
+
+/* =========================
+    BOTÓN
+========================= */
+
+button {
+
+    background: #4CAF50;
+
+    color: white;
+
+    border: none;
+
+    padding: 15px 35px;
+
+    font-size: 22px;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+button:hover {
+
+    background: #43A047;
+
+    transform: scale(1.05);
+}
+
+/* =========================
+    BLOQUEO
+========================= */
+
+.bloqueado {
+
+    opacity: 0.4;
+
+    pointer-events: none;
+
+    filter: grayscale(100%);
+
+    cursor: not-allowed;
+}
