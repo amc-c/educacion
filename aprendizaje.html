@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Aprendizaje Matemático</title>
+
+    <link rel="icon"
+        href="img/icon.png">
+
+    <link rel="stylesheet"
+        href="css/aprendizaje.css">
+
+</head>
+
+<body onload="iniciarAprendizaje()">
+
+    <div class="contenedor">
+
+        <!-- AVATAR -->
+        <img id="avatar"
+            class="avatar"
+            src=""
+            alt="Avatar">
+
+        <!-- TÍTULO -->
+        <h1>
+            ¡Aprendamos Matemáticas! ✨
+        </h1>
+
+        <!-- MENSAJE -->
+        <p id="mensaje"></p>
+
+        <!-- TARJETAS -->
+        <div class="tarjetas">
+
+            <!-- NÚMEROS -->
+            <div class="tarjeta"
+                onclick="abrirNumeros()">
+
+                🔢
+
+                <span>Números</span>
+
+            </div>
+
+            <!-- SUMAS -->
+            <div class="tarjeta bloqueado"
+                onclick="bloqueado()">
+
+                ➕
+
+                <span>Sumas</span>
+
+            </div>
+
+            <!-- RESTAS -->
+            <div class="tarjeta bloqueado"
+                onclick="bloqueado()">
+
+                ➖
+
+                <span>Restas</span>
+
+            </div>
+
+        </div>
+
+        <!-- BOTÓN VOLVER -->
+        <button onclick="volver()">
+
+            🏠 Volver
+
+        </button>
+
+    </div>
+
+    <script src="js/aprendizaje.js"></script>
+
+</body>
+</html>
