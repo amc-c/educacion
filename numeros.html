@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Aprender Números</title>
+
+    <link rel="icon" href="img/icon.png">
+
+    <link rel="stylesheet" href="css/estilo_numeros.css">
+
+</head>
+
+<body onload="iniciarNumeros()">
+
+    <div class="contenedor">
+
+        <h1>🔢 Aprendamos los Números</h1>
+
+        <p class="subtitulo">
+            Presiona un número para aprender
+        </p>
+
+        <!-- NUMEROS -->
+
+        <div id="contenedorNumeros" class="numeros">
+
+            <div class="tarjetaNumero" onclick="seleccionarNumero(1)">1</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(2)">2</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(3)">3</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(4)">4</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(5)">5</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(6)">6</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(7)">7</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(8)">8</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(9)">9</div>
+            <div class="tarjetaNumero" onclick="seleccionarNumero(10)">10</div>
+
+        </div>
+
+        <!-- PANEL -->
+
+        <div id="panelNumero" class="panelNumero oculto">
+
+            <div id="numeroGrande" class="numeroGrande">1</div>
+
+            <p id="textoNumero" class="textoNumero">UNO</p>
+
+            <div id="manzanas" class="manzanas"></div>
+
+            <button onclick="volverNumeros()">⬅ Volver</button>
+
+            <button onclick="volverAAprendizaje()">🏠 Volver a Aprendizaje</button>
+
+        </div>
+
+        <button id="btnCompletar" onclick="completarNumeros()" style="display: none;">
+            ✅ He aprendido los números
+        </button>
+
+    </div>
+
+    <!-- AUDIOS -->
+
+    <audio id="audioLogro" src="sonidos/logro.mp3"></audio>
+
+    <audio id="audioError" src="sonidos/error.mp3"></audio>
+
+    <!-- JS -->
+
+    <script src="js/numeros.js"></script>
+
+</body>
+
+</html>

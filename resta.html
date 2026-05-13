@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Aprender Restas</title>
+
+    <link rel="icon" href="img/icon.png">
+
+    <link rel="stylesheet" href="css/estilo_resta.css">
+
+</head>
+
+<body onload="iniciarRestas()">
+
+    <div class="contenedor">
+
+        <h1>➖ Aprendamos las Restas</h1>
+
+        <p class="subtitulo">
+            Presiona una resta para ver cómo se hace
+        </p>
+
+        <!-- RESTAS -->
+
+        <div id="contenedorRestas" class="restas">
+
+            <div class="tarjetaResta" onclick="seleccionarResta(2, 1)">
+                2 - 1
+            </div>
+
+            <div class="tarjetaResta" onclick="seleccionarResta(3, 1)">
+                3 - 1
+            </div>
+
+            <div class="tarjetaResta" onclick="seleccionarResta(3, 2)">
+                3 - 2
+            </div>
+
+            <div class="tarjetaResta" onclick="seleccionarResta(4, 1)">
+                4 - 1
+            </div>
+
+            <div class="tarjetaResta" onclick="seleccionarResta(4, 2)">
+                4 - 2
+            </div>
+
+            <div class="tarjetaResta" onclick="seleccionarResta(5, 1)">
+                5 - 1
+            </div>
+
+            <div class="tarjetaResta" onclick="seleccionarResta(5, 2)">
+                5 - 2
+            </div>
+
+            <div class="tarjetaResta" onclick="seleccionarResta(5, 3)">
+                5 - 3
+            </div>
+
+            <div class="tarjetaResta" onclick="seleccionarResta(6, 1)">
+                6 - 1
+            </div>
+
+        </div>
+
+        <!-- PANEL -->
+
+        <div id="panelResta" class="panelResta oculto">
+
+            <div id="restaGrande" class="restaGrande">
+                2 - 1 = 1
+            </div>
+
+            <p id="textoResta" class="textoResta">
+                Dos menos uno es igual a uno
+            </p>
+
+            <!-- VISUAL -->
+
+            <div id="visualResta" class="visualResta"></div>
+
+            <!-- BOTON -->
+
+            <button onclick="volverRestas()">
+                ⬅ Volver
+            </button>
+
+        </div>
+
+        <!-- BOTON COMPLETAR -->
+
+        <button id="btnCompletar" onclick="completarRestas()" style="display: none;">
+            ✅ He aprendido las restas
+        </button>
+
+    </div>
+
+    <!-- AUDIOS -->
+
+    <audio id="audioLogro" src="sonidos/logro.mp3"></audio>
+
+    <audio id="audioError" src="sonidos/error.mp3"></audio>
+
+    <!-- JS -->
+
+    <script src="js/resta.js"></script>
+
+</body>
+
+</html>

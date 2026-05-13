@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Aprender Sumas</title>
+
+    <link rel="icon" href="img/icon.png">
+
+    <link rel="stylesheet" href="css/estilo_suma.css">
+
+</head>
+
+<body onload="iniciarSumas()">
+
+    <div class="contenedor">
+
+        <h1>➕ Aprendamos las Sumas</h1>
+
+        <p class="subtitulo">
+            Presiona una suma para ver cómo se hace
+        </p>
+
+        <!-- SUMAS -->
+
+        <div id="contenedorSumas" class="sumas">
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(1, 1)">
+                1 + 1
+            </div>
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(1, 2)">
+                1 + 2
+            </div>
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(2, 2)">
+                2 + 2
+            </div>
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(2, 3)">
+                2 + 3
+            </div>
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(3, 3)">
+                3 + 3
+            </div>
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(3, 4)">
+                3 + 4
+            </div>
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(4, 4)">
+                4 + 4
+            </div>
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(4, 5)">
+                4 + 5
+            </div>
+
+            <div class="tarjetaSuma" onclick="seleccionarSuma(5, 5)">
+                5 + 5
+            </div>
+
+        </div>
+
+        <!-- PANEL -->
+
+        <div id="panelSuma" class="panelSuma oculto">
+
+            <div id="sumaGrande" class="sumaGrande">
+                1 + 1 = 2
+            </div>
+
+            <p id="textoSuma" class="textoSuma">
+                Uno más uno es igual a dos
+            </p>
+
+            <!-- VISUAL -->
+
+            <div id="visualSuma" class="visualSuma"></div>
+
+            <!-- BOTON -->
+
+            <button onclick="volverSumas()">
+                ⬅ Volver
+            </button>
+
+        </div>
+
+        <!-- BOTON COMPLETAR -->
+
+        <button id="btnCompletar" onclick="completarSumas()" style="display: none;">
+            ✅ He aprendido las sumas
+        </button>
+
+    </div>
+
+    <!-- AUDIOS -->
+
+    <audio id="audioLogro" src="sonidos/logro.mp3"></audio>
+
+    <audio id="audioError" src="sonidos/error.mp3"></audio>
+
+    <!-- JS -->
+
+    <script src="js/suma.js"></script>
+
+</body>
+
+</html>

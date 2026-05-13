@@ -25,20 +25,57 @@ function iniciarAprendizaje() {
 
     img.src = avatar;
 
-    // Mensaje
-    document.getElementById("mensaje")
-        .textContent =
-        "Hola " + nombre +
-        ", primero aprende los números 🔢";
+    // Verificar progreso
+    let numerosCompletados =
+        localStorage.getItem("numerosCompletados");
 
-    // Voz bienvenida
-    hablar(
-        "Hola " + nombre +
-        ", primero aprende los números"
-    );
+    if (numerosCompletados === "true") {
 
-    // Nivel inicial
-    actualizarNivelAvatar("basico");
+        // Desbloquear sumas y restas
+        document.querySelectorAll(".bloqueado").forEach(el => {
+
+            el.classList.remove("bloqueado");
+
+            if (el.textContent.includes("Sumas")) {
+                el.onclick = abrirSumas;
+            } else {
+                el.onclick = abrirRestas;
+            }
+
+        });
+
+        // Mensaje
+        document.getElementById("mensaje")
+            .textContent =
+            "¡Genial " + nombre +
+            "! Ahora puedes aprender sumas y restas ➕➖";
+
+        // Voz
+        hablar(
+            "Genial " + nombre +
+            ". Ahora puedes aprender sumas y restas"
+        );
+
+        // Nivel medio
+        actualizarNivelAvatar("medio");
+
+    } else {
+
+        // Mensaje
+        document.getElementById("mensaje")
+            .textContent =
+            "Hola " + nombre +
+            ", primero aprende los números 🔢";
+
+        // Voz bienvenida
+        hablar(
+            "Hola " + nombre +
+            ", primero aprende los números"
+        );
+
+        // Nivel inicial
+        actualizarNivelAvatar("basico");
+    }
 }
 
 // =========================
@@ -72,7 +109,41 @@ function abrirNumeros() {
     setTimeout(() => {
 
         window.location.href =
-            "numeros/numeros.html";
+    "numeros.html";
+
+    }, 2500);
+}
+
+// =========================
+// ABRIR SUMAS
+// =========================
+function abrirSumas() {
+
+    hablar(
+        "Vamos a aprender las sumas"
+    );
+
+    setTimeout(() => {
+
+        window.location.href =
+    "suma.html";
+
+    }, 2500);
+}
+
+// =========================
+// ABRIR RESTAS
+// =========================
+function abrirRestas() {
+
+    hablar(
+        "Vamos a aprender las restas"
+    );
+
+    setTimeout(() => {
+
+        window.location.href =
+    "resta.html";
 
     }, 2500);
 }
@@ -83,7 +154,7 @@ function abrirNumeros() {
 function bloqueado() {
 
     hablar(
-        "Primero complete la elección números"
+        "Primero debes aprender los números"
     );
 }
 

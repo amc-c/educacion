@@ -78,15 +78,18 @@ function hablar(texto) {
 function irAAprendizaje() {
 
     // Voz antes de entrar
-    hablar(
-        "Vamos, es hora de aprender"
-    );
+    let texto = "Vamos, es hora de aprender";
+    let voz = new SpeechSynthesisUtterance(texto);
 
-    // Esperar voz
-    setTimeout(() => {
+    voz.lang = "es-ES";
+    voz.volume = 1;
+    voz.rate = 1.05;
+    voz.pitch = 1.1;
 
-        window.location.href =
-            "aprendizaje.html";
+    voz.onend = () => {
+        window.location.href = "aprendizaje.html";
+    };
 
-    }, 2500);
+    speechSynthesis.cancel();
+    speechSynthesis.speak(voz);
 }
