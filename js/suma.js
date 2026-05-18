@@ -64,7 +64,7 @@ function seleccionarSuma(a, b) {
 
     // VOZ
 
-    hablar("Seleccionaste la suma " + a + " más " + b + ". " + textosSumas[clave]);
+    hablar( textosSumas[clave]);
 
     // VISUAL
 
@@ -186,7 +186,7 @@ function completarSumas() {
 
     localStorage.setItem("sumasCompletadas", "true");
 
-    hablar("¡Excelente! Has aprendido las sumas.");
+    hablar("¡Excelente!. Regresando a la selección");
 
     setTimeout(() => {
 

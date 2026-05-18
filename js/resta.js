@@ -64,7 +64,7 @@ function seleccionarResta(a, b) {
 
     // VOZ
 
-    hablar("Seleccionaste la resta " + a + " menos " + b + ". " + textosRestas[clave]);
+    hablar(textosRestas[clave]);
 
     // VISUAL
 

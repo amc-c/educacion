@@ -1,3 +1,9 @@
+// =========================
+// AUDIO BOTONES
+// =========================
+let sonidoBoton =
+    new Audio("sonidos/avatar.mp3");
+
 
 // =========================
 // INICIAR
@@ -37,8 +43,11 @@ function iniciarAprendizaje() {
             el.classList.remove("bloqueado");
 
             if (el.textContent.includes("Sumas")) {
+
                 el.onclick = abrirSumas;
+
             } else {
+
                 el.onclick = abrirRestas;
             }
 
@@ -78,6 +87,7 @@ function iniciarAprendizaje() {
     }
 }
 
+
 // =========================
 // VOZ
 // =========================
@@ -97,10 +107,15 @@ function hablar(texto) {
     speechSynthesis.speak(voz);
 }
 
+
 // =========================
 // ABRIR NÚMEROS
 // =========================
 function abrirNumeros() {
+
+    // SONIDO
+    sonidoBoton.currentTime = 0;
+    sonidoBoton.play();
 
     hablar(
         "Vamos a aprender los números"
@@ -109,15 +124,20 @@ function abrirNumeros() {
     setTimeout(() => {
 
         window.location.href =
-    "numeros.html";
+            "numeros.html";
 
     }, 2500);
 }
+
 
 // =========================
 // ABRIR SUMAS
 // =========================
 function abrirSumas() {
+
+    // SONIDO
+    sonidoBoton.currentTime = 0;
+    sonidoBoton.play();
 
     hablar(
         "Vamos a aprender las sumas"
@@ -126,15 +146,20 @@ function abrirSumas() {
     setTimeout(() => {
 
         window.location.href =
-    "suma.html";
+            "suma.html";
 
     }, 2500);
 }
+
 
 // =========================
 // ABRIR RESTAS
 // =========================
 function abrirRestas() {
+
+    // SONIDO
+    sonidoBoton.currentTime = 0;
+    sonidoBoton.play();
 
     hablar(
         "Vamos a aprender las restas"
@@ -143,10 +168,11 @@ function abrirRestas() {
     setTimeout(() => {
 
         window.location.href =
-    "resta.html";
+            "resta.html";
 
     }, 2500);
 }
+
 
 // =========================
 // BLOQUEADO
@@ -157,6 +183,7 @@ function bloqueado() {
         "Primero debes aprender los números"
     );
 }
+
 
 // =========================
 // NIVEL AVATAR
@@ -191,6 +218,7 @@ function actualizarNivelAvatar(nivel) {
         );
     }
 }
+
 
 // =========================
 // VOLVER
