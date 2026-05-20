@@ -1,0 +1,629 @@
+/* =========================
+BODY
+========================= */
+
+body {
+
+    margin: 0;
+
+    padding: 20px;
+
+    font-family: Arial, sans-serif;
+
+    background: linear-gradient(
+        180deg,
+        #87CEFA,
+        #E0F7FF
+    );
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    min-height: 100vh;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================
+CONTENEDOR
+========================= */
+
+.contenedor {
+
+    background: white;
+
+    width: 100%;
+
+    max-width: 1200px;
+
+    padding: 40px;
+
+    border-radius: 30px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+}
+
+
+/* =========================
+TÍTULO
+========================= */
+
+h1 {
+
+    color: #1565C0;
+
+    font-size: 48px;
+
+    margin-bottom: 20px;
+
+    margin-top: 0;
+}
+
+
+/* =========================
+PUNTUACIÓN
+========================= */
+
+.puntuacion {
+
+    font-size: 32px;
+
+    color: #4CAF50;
+
+    font-weight: bold;
+
+    margin-bottom: 40px;
+
+    background: #F0F7F0;
+
+    padding: 20px 40px;
+
+    border-radius: 15px;
+
+    border: 3px solid #4CAF50;
+}
+
+
+#puntos {
+
+    color: #2E7D32;
+
+    font-size: 40px;
+}
+
+
+/* =========================
+CANASTAS
+========================= */
+
+.canastas {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 40px;
+
+    margin-bottom: 40px;
+
+    flex-wrap: wrap;
+}
+
+
+.canasta {
+
+    position: relative;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    min-height: 180px;
+
+    padding: 15px;
+
+    border-radius: 20px;
+
+    background: #F5F5F5;
+
+    border: 3px dashed #CCC;
+
+    transition: 0.3s;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+
+.canasta:hover {
+
+    background: #FFFACD;
+
+    border-color: #FFD700;
+
+    transform: scale(1.05);
+}
+
+
+.canasta.activa {
+
+    background: #FFE082;
+
+    border-color: #FFC107;
+
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+}
+
+
+.canasta img {
+
+    width: 120px;
+
+    height: 100px;
+
+    object-fit: contain;
+
+    margin: 10px 0;
+}
+
+
+.iconoCanasta {
+
+    font-size: 80px;
+
+    margin: 10px 0;
+
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+}
+
+
+.operacion {
+
+    font-size: 32px;
+
+    font-weight: bold;
+
+    color: #333;
+
+    margin-bottom: 10px;
+
+    min-height: 45px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.aciertos {
+
+    font-size: 18px;
+
+    color: #4CAF50;
+
+    font-weight: bold;
+
+    margin-top: 10px;
+}
+
+
+/* =========================
+ÁREA DE JUEGO
+========================= */
+
+.areaJuego {
+
+    width: 100%;
+
+    height: 400px;
+
+    background: linear-gradient(
+        180deg,
+        #E8F5E9,
+        #F1F8E9
+    );
+
+    border: 3px solid #81C784;
+
+    border-radius: 20px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    margin-bottom: 30px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+
+.instrucciones {
+
+    font-size: 24px;
+
+    color: #666;
+
+    margin-bottom: 20px;
+
+    animation: parpadeo 1.5s infinite;
+}
+
+
+@keyframes parpadeo {
+
+    0%, 100% { opacity: 1; }
+
+    50% { opacity: 0.5; }
+}
+
+
+.contenedor-manzana {
+
+    position: absolute;
+
+    width: 50px;
+
+    height: 50px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+
+.canasta .contenedor-manzana {
+
+    position: relative;
+
+    width: 40px;
+
+    height: 40px;
+
+    margin: 4px;
+
+}
+
+
+.manzana {
+
+    width: 40px;
+
+    height: 40px;
+
+    position: absolute;
+
+    cursor: grab;
+
+    user-select: none;
+
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+
+    transition: transform 0.1s;
+}
+
+
+.manzana:active {
+
+    cursor: grabbing;
+
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.4));
+}
+
+
+.manzana:hover {
+
+    transform: scale(1.1);
+}
+
+
+.numero-manzana {
+
+    position: absolute;
+
+    width: 30px;
+
+    height: 30px;
+
+    background: #FFD700;
+
+    border: 2px solid #FF6B6B;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    color: #333;
+
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+
+    z-index: 10;
+
+    top: -10px;
+
+    right: -10px;
+}
+
+
+/* =========================
+BOTONES
+========================= */
+
+.botones {
+
+    display: flex;
+
+    gap: 20px;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+}
+
+
+button {
+
+    background: #4CAF50;
+
+    color: white;
+
+    border: none;
+
+    padding: 15px 35px;
+
+    font-size: 20px;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+    font-weight: bold;
+}
+
+
+button:hover {
+
+    background: #45a049;
+
+    transform: scale(1.05);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+
+button:active {
+
+    transform: scale(0.98);
+}
+
+
+/* =========================
+MENSAJE FEEDBACK
+========================= */
+
+.mensajeFeedback {
+
+    position: fixed;
+
+    top: 50%;
+
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    font-size: 48px;
+
+    font-weight: bold;
+
+    z-index: 1000;
+
+    animation: flotarMensaje 1.5s ease-out forwards;
+
+    pointer-events: none;
+}
+
+
+.mensajeFeedback.acierto {
+
+    color: #4CAF50;
+
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+
+.mensajeFeedback.error {
+
+    color: #F44336;
+
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+
+@keyframes flotarMensaje {
+
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -200%) scale(1.5);
+    }
+}
+
+
+.resultadoOverlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    z-index: 2000;
+
+    pointer-events: none;
+}
+
+
+.resultadoContenedor {
+
+    background: rgba(255, 255, 255, 0.95);
+
+    border-radius: 30px;
+
+    padding: 40px 60px;
+
+    text-align: center;
+
+    font-size: 44px;
+
+    color: #333;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+
+}
+
+
+.resultadoContenedor.exito {
+
+    color: #2E7D32;
+
+}
+
+
+.resultadoContenedor.error {
+
+    color: #B00020;
+
+}
+
+
+.confetti {
+
+    position: fixed;
+
+    top: 10%;
+
+    width: 12px;
+
+    height: 24px;
+
+    opacity: 0.95;
+
+    transform: rotate(20deg);
+
+    animation: caerConfetti 2s ease-out forwards;
+
+    z-index: 2100;
+}
+
+
+@keyframes caerConfetti {
+
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(350px) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+
+#btnVerificar {
+
+    background: #2196F3;
+
+}
+
+
+#btnVerificar:hover {
+
+    background: #1976D2;
+}
+
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    .contenedor {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .canastas {
+        gap: 20px;
+    }
+
+    .canasta img {
+        width: 80px;
+        height: 70px;
+    }
+
+    .operacion {
+        font-size: 24px;
+    }
+
+    .areaJuego {
+        height: 300px;
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 16px;
+    }
+}

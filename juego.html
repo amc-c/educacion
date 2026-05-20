@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Juego de Arrastre</title>
+
+    <link rel="icon" href="img/icon.png">
+
+    <link rel="stylesheet" href="css/juego.css">
+
+</head>
+
+<body onload="iniciarJuego()">
+
+    <div class="contenedor">
+
+        <!-- TÍTULO -->
+        <h1>🎮 Juego de Manzanas</h1>
+
+        <!-- PUNTUACIÓN -->
+        <div class="puntuacion">
+            <span>Puntos: </span>
+            <span id="puntos">0</span>
+        </div>
+
+        <!-- CANASTAS -->
+        <div class="canastas">
+
+            <div class="canasta" id="canasta1" ondrop="soltar(event)" ondragover="permitirSoltar(event)">
+                <div class="operacion" id="op1"></div>
+                <div class="iconoCanasta">🧺</div>
+                <div class="aciertos" id="aciertos1">0/3</div>
+            </div>
+
+            <div class="canasta" id="canasta2" ondrop="soltar(event)" ondragover="permitirSoltar(event)">
+                <div class="operacion" id="op2"></div>
+                <div class="iconoCanasta">🧺</div>
+                <div class="aciertos" id="aciertos2">0/3</div>
+            </div>
+
+            <div class="canasta" id="canasta3" ondrop="soltar(event)" ondragover="permitirSoltar(event)">
+                <div class="operacion" id="op3"></div>
+                <div class="iconoCanasta">🧺</div>
+                <div class="aciertos" id="aciertos3">0/3</div>
+            </div>
+
+        </div>
+
+        <!-- ÁREA DE JUEGO -->
+        <div class="areaJuego" id="areaJuego">
+
+            <div class="instrucciones">
+                Arrastra las manzanas a la canasta correcta
+            </div>
+
+        </div>
+
+        <!-- BOTONES -->
+        <div class="botones">
+            <button onclick="volver()">🏠 Volver</button>
+            <button onclick="reiniciarJuego()">🔄 Reiniciar</button>
+            <button id="btnVerificar" onclick="verificarJuego()">✅ Verificar</button>
+        </div>
+
+    </div>
+
+    <!-- AUDIO -->
+    <audio id="audioAcierto" src="sonidos/correcto.mp3"></audio>
+    <audio id="audioError" src="sonidos/error.mp3"></audio>
+
+    <script src="js/juego.js"></script>
+
+</body>
+
+</html>

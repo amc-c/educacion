@@ -35,6 +35,12 @@ function iniciarAprendizaje() {
     let numerosCompletados =
         localStorage.getItem("numerosCompletados");
 
+    let sumasCompletadas =
+        localStorage.getItem("sumasCompletadas");
+
+    let restasCompletadas =
+        localStorage.getItem("restasCompletadas");
+
     if (numerosCompletados === "true") {
 
         // Desbloquear sumas y restas
@@ -46,9 +52,13 @@ function iniciarAprendizaje() {
 
                 el.onclick = abrirSumas;
 
-            } else {
+            } else if (el.textContent.includes("Restas")) {
 
                 el.onclick = abrirRestas;
+
+            } else if (el.textContent.includes("Juego")) {
+
+                el.onclick = bloqueado;
             }
 
         });
@@ -85,6 +95,9 @@ function iniciarAprendizaje() {
         // Nivel inicial
         actualizarNivelAvatar("basico");
     }
+
+    // Verificar si todos los módulos están completados para desbloquear el juego
+    verificarJuegoDesbloqueado();
 }
 
 
@@ -227,4 +240,75 @@ function volver() {
 
     window.location.href =
         "bienvenido.html";
+}
+
+
+// =========================
+// VERIFICAR JUEGO DESBLOQUEADO
+// =========================
+function verificarJuegoDesbloqueado() {
+
+    let nombre =
+        localStorage.getItem("nombre");
+
+    let numerosCompletados =
+        localStorage.getItem("numerosCompletados");
+
+    let sumasCompletadas =
+        localStorage.getItem("sumasCompletadas");
+
+    let restasCompletadas =
+        localStorage.getItem("restasCompletadas");
+
+    // Si los tres están completados, desbloquear el juego
+    if (numerosCompletados === "true" &&
+        sumasCompletadas === "true" &&
+        restasCompletadas === "true") {
+
+        let tarjetaJuego =
+            document.getElementById("tarjetaJuego");
+
+        if (tarjetaJuego) {
+
+            tarjetaJuego.classList.remove("bloqueado");
+
+            tarjetaJuego.onclick = abrirJuego;
+
+            // Actualizar mensaje
+            document.getElementById("mensaje")
+                .textContent =
+                "¡ " + nombre +
+                " eres un matemático! 🎉 Ahora juega nuestro juego especial 🎮";
+
+            // Voz
+            hablar(
+                "¡Felicidades! Completaste todas las lecciones. Ahora puedes jugar nuestro juego especial"
+            );
+
+            // Nivel avanzado
+            actualizarNivelAvatar("avanzado");
+        }
+    }
+}
+
+
+// =========================
+// ABRIR JUEGO
+// =========================
+function abrirJuego() {
+
+    // SONIDO
+    sonidoBoton.currentTime = 0;
+    sonidoBoton.play();
+
+    hablar(
+        "Vamos a jugar"
+    );
+
+    setTimeout(() => {
+
+        window.location.href =
+            "juego.html";
+
+    }, 2500);
 }
