@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Felicitaciones!</title>
+    <link rel="icon" href="img/icon.png">
+    <link rel="stylesheet" href="css/felicitaciones.css">
+</head>
+<body onload="iniciarFelicitaciones()">
+
+    <div class="contenedor-fondo">
+        
+        <!-- CONFETI DINÁMICO -->
+        <div id="confetti-container"></div>
+
+        <!-- CONTENEDOR PRINCIPAL -->
+        <div class="contenedor-principal">
+
+            <!-- TÍTULO ANIMADO -->
+            <div class="titulo-animado">
+                ¡FELICITACIONES!
+            </div>
+
+            <!-- MENSAJE PERSONALIZADO -->
+            <div class="mensaje-personalizado" id="mensaje">
+                ¡Lo lograste!
+            </div>
+
+            <!-- TARJETA DE LOGRO -->
+            <div class="tarjeta-logro">
+
+                <!-- ESTRELLAS DECORATIVAS ARRIBA -->
+                <div class="estrellas-arriba">
+                    <span class="estrella estrella-1">⭐</span>
+                    <span class="estrella estrella-2">⭐</span>
+                    <span class="estrella estrella-3">⭐</span>
+                </div>
+
+                <!-- AVATAR -->
+                <div class="seccion-avatar">
+                    <img id="avatar-img" src="" alt="Avatar" class="avatar">
+                </div>
+
+                <!-- SEPARADOR -->
+                <div class="separador"></div>
+
+                <!-- PUNTOS -->
+                <div class="seccion-puntos">
+                    <div class="etiqueta-puntos">PUNTOS FINALES</div>
+                    <div class="puntos-numero" id="puntos-numero">0</div>
+                </div>
+
+                <!-- ESTRELLAS DECORATIVAS ABAJO -->
+                <div class="estrellas-abajo">
+                    <span class="estrella estrella-1">⭐</span>
+                    <span class="estrella estrella-2">⭐</span>
+                    <span class="estrella estrella-3">⭐</span>
+                </div>
+
+            </div>
+
+            <!-- BOTÓN VOLVER -->
+            <div class="contenedor-boton">
+                <button class="boton-volver" onclick="volverAlLogin()">
+                    🏠 Volver al Login
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- AUDIOS -->
+    <audio id="audioFelicitaciones" src="sonidos/correcto.mp3"></audio>
+
+    <script src="js/felicitaciones.js"></script>
+
+</body>
+</html>

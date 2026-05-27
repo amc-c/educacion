@@ -422,6 +422,13 @@ function mostrarResultadoFinal(exito, puntos) {
 
         hablar("Excelente. Todo está bien, ganaste " + puntos + " puntos");
 
+        // Mostrar botón de felicitaciones después de 2 segundos
+        setTimeout(() => {
+            document.getElementById("btnFelicitaciones").style.display = "inline-block";
+            document.getElementById("btnVerificar").style.display = "none";
+            document.getElementById("btnVerificar").disabled = true;
+        }, 2200);
+
     } else {
 
         overlay.innerHTML =
@@ -515,4 +522,18 @@ function reiniciarJuego() {
 function volver() {
 
     window.location.href = "aprendizaje.html";
+}
+
+
+// =========================
+// IR A FELICITACIONES
+// =========================
+
+function irAFelicitaciones() {
+
+    // Guardar puntos en localStorage
+    localStorage.setItem("puntosJuego", puntos);
+
+    // Redirigir a felicitaciones
+    window.location.href = "felicitaciones.html";
 }
