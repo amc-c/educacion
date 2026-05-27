@@ -420,14 +420,20 @@ function mostrarResultadoFinal(exito, puntos) {
 
         reproducirSonido(sonidoAcierto);
 
-        hablar("Excelente. Todo está bien, ganaste " + puntos + " puntos");
+        // Crear voz y esperar a que termine para ir a felicitaciones
+        let voz = new SpeechSynthesisUtterance("Excelente. Todo está bien, ganaste " + puntos + " puntos");
+        voz.lang = "es-ES";
+        voz.rate = 0.95;
+        voz.pitch = 1.1;
 
-        // Mostrar botón de felicitaciones después de 2 segundos
-        setTimeout(() => {
-            document.getElementById("btnFelicitaciones").style.display = "inline-block";
-            document.getElementById("btnVerificar").style.display = "none";
-            document.getElementById("btnVerificar").disabled = true;
-        }, 2200);
+        // Cuando termina la voz, ir a felicitaciones
+        voz.onend = () => {
+            localStorage.setItem("puntosJuego", puntos);
+            window.location.href = "felicitaciones.html";
+        };
+
+        speechSynthesis.cancel();
+        speechSynthesis.speak(voz);
 
     } else {
 
@@ -522,18 +528,4 @@ function reiniciarJuego() {
 function volver() {
 
     window.location.href = "aprendizaje.html";
-}
-
-
-// =========================
-// IR A FELICITACIONES
-// =========================
-
-function irAFelicitaciones() {
-
-    // Guardar puntos en localStorage
-    localStorage.setItem("puntosJuego", puntos);
-
-    // Redirigir a felicitaciones
-    window.location.href = "felicitaciones.html";
 }
