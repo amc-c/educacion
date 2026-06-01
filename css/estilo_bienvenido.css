@@ -48,3 +48,11 @@ body{
         button:hover{
             background:#0099ff;
         }
+
+        button.secundario {
+            background: #ff9f43;
+        }
+
+        button.secundario:hover {
+            background: #ff7f17;
+        }

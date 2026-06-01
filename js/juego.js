@@ -443,7 +443,7 @@ function mostrarResultadoFinal(exito, puntos) {
         reproducirSonido(sonidoError);
 
         hablar(
-            "Intenta de nuevo analizando mejor las restas"
+            "Intenta de nuevo analizando las operaciones"
         );
 
         setTimeout(() => {

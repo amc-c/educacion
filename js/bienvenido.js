@@ -41,12 +41,21 @@ function iniciarBienvenida() {
         ", bienvenido"
     );
 
-    // Evento botón
+    // Evento botón principal
     if (boton) {
-
         boton.addEventListener(
             "click",
             irAAprendizaje
+        );
+    }
+
+    // Evento botón 4to básico
+    let boton4to = document.getElementById("btnAprender4to");
+
+    if (boton4to) {
+        boton4to.addEventListener(
+            "click",
+            irABienvenida4to
         );
     }
 }
@@ -88,6 +97,27 @@ function irAAprendizaje() {
 
     voz.onend = () => {
         window.location.href = "aprendizaje.html";
+    };
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(voz);
+}
+
+// =========================
+// IR A BIENVENIDA 4TO
+// =========================
+function irABienvenida4to() {
+
+    let texto = "Vamos a aprender";
+    let voz = new SpeechSynthesisUtterance(texto);
+
+    voz.lang = "es-ES";
+    voz.volume = 1;
+    voz.rate = 1.05;
+    voz.pitch = 1.1;
+
+    voz.onend = () => {
+        window.location.href = "bienvenida4to.html";
     };
 
     speechSynthesis.cancel();
