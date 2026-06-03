@@ -1,58 +1,123 @@
-body{
-            margin:0;
-            padding:0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(135deg,#fa3434,#00f2fe);
-            height:100vh;
-
-            display:flex;
-            justify-content:center;
-            align-items:center;
+body {
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at top left, rgba(85, 180, 255, 0.18), transparent 25%),
+                        radial-gradient(circle at bottom right, rgba(255, 182, 0, 0.18), transparent 20%),
+                        linear-gradient(135deg, #0f3057 0%, #005d8f 45%, #0b4f6c 100%);
+            color: #1d2733;
         }
 
-        .contenedor{
-            background:white;
-            padding:40px;
-            border-radius:20px;
-            text-align:center;
-            width:350px;
-
-            box-shadow:0 10px 25px rgba(0,0,0,0.2);
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url("../img/overlay-dots.png");
+            opacity: 0.08;
+            pointer-events: none;
         }
 
-        h1{
-            color:#333;
-            margin-bottom:20px;
+        .contenedor {
+            position: relative;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            padding: 42px 36px;
+            border-radius: 28px;
+            text-align: center;
+            width: min(420px, calc(100% - 32px));
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.16);
         }
 
-        #avatar{
-            width:150px;
-            height:150px;
-            border-radius:50%;
-            border:5px solid #4facfe;
-            object-fit:cover;
-            margin-bottom:20px;
+        .contenedor::after {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(79, 172, 254, 0.18);
+            top: -40px;
+            right: -40px;
+            z-index: -1;
         }
 
-        button{
-            background:#4facfe;
-            color:white;
-            border:none;
-            padding:12px 25px;
-            border-radius:10px;
-            font-size:16px;
-            cursor:pointer;
-            transition:0.3s;
+        .texto-bienvenida {
+            margin-bottom: 26px;
         }
 
-        button:hover{
-            background:#0099ff;
+        .texto-bienvenida h1 {
+            font-size: 2.2rem;
+            letter-spacing: -0.04em;
+            margin: 0 0 12px;
+            color: #0f2c45;
+        }
+
+        .texto-bienvenida p {
+            margin: 0;
+            color: #4f5f70;
+            line-height: 1.65;
+            font-size: 0.98rem;
+        }
+
+        #avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid rgba(79, 172, 254, 0.85);
+            object-fit: cover;
+            margin: 0 auto 24px;
+            box-shadow: 0 18px 60px rgba(15, 44, 69, 0.15);
+            background: #f7fbff;
+        }
+
+        .botones {
+            display: grid;
+            gap: 14px;
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #3c8ce7 0%, #00f2fe 100%);
+            color: #fff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            box-shadow: 0 14px 24px rgba(38, 128, 207, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 28px rgba(38, 128, 207, 0.24);
+            background: linear-gradient(135deg, #2f78d6 0%, #00d7f5 100%);
         }
 
         button.secundario {
-            background: #ff9f43;
+            background: linear-gradient(135deg, #ff9f43 0%, #ffb75d 100%);
+            box-shadow: 0 14px 24px rgba(255, 143, 32, 0.18);
         }
 
         button.secundario:hover {
-            background: #ff7f17;
+            background: linear-gradient(135deg, #f78b1a 0%, #ff9853 100%);
+        }
+
+        @media (max-width: 420px) {
+            .contenedor {
+                padding: 28px 20px;
+            }
+
+            .texto-bienvenida h1 {
+                font-size: 1.85rem;
+            }
+
+            button {
+                padding: 14px 18px;
+            }
         }
