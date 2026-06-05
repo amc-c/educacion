@@ -9,16 +9,23 @@
 <main>
     <div class="page-header">
         <h1>Mayor o menor</h1>
-        <p>Decide cuál número es más grande o cuál es más pequeño entre tres opciones.</p>
+        <p>Observa la recta numérica y elige con cuidado: tienes un intento por pregunta.</p>
     </div>
 
     <section class="game-panel">
         <div class="info-box">
             <strong>Instrucción:</strong>
-            Lee la pregunta y toca el número que responde correctamente. Si quieres, crea una nueva pregunta.
+            Lee la pregunta, compara las posiciones en la recta numérica y toca la respuesta cuando estés seguro.
         </div>
 
         <div class="linea-num" id="questionText"></div>
+        <div class="number-line-card">
+            <div class="number-line" id="numberLine"></div>
+            <div class="number-line-labels">
+                <span id="lineMin">0</span>
+                <span id="lineMax">10.000</span>
+            </div>
+        </div>
 
         <div class="answer-row" id="answers"></div>
 
