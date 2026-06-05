@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Juego Uno 4º Básico</title>
+    <link rel="stylesheet" href="css/juegoUno4t.css">
+</head>
+<body>
+<main>
+    <div class="page-header">
+        <h1>Ordena los números</h1>
+        <p>Arrastra cada número a su lugar para ponerlos de menor a mayor.</p>
+    </div>
+
+    <section class="game-panel">
+        <div class="info-box">
+            <strong>Instrucción:</strong>
+            Arrastra los números a las casillas en orden de menor a mayor. Usa el botón "Revisar" cuando termines.
+        </div>
+
+        <div class="tile-pool" id="tilePool"></div>
+
+        <div class="number-row" id="dropArea"></div>
+
+        <div class="actions">
+            <button class="button" id="checkOrder">Revisar</button>
+            <button class="button secondary" id="resetGame">Reiniciar</button>
+            <a class="link-box" href="lista.html">Volver a selección</a>
+        </div>
+
+        <div id="resultBox" class="result-box"></div>
+    </section>
+</main>
+<script src="js/juegoUno4t.js"></script>
+</body>
+</html>

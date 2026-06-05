@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Juego Tres 4º Básico</title>
+    <link rel="stylesheet" href="css/juegoTres4t.css">
+</head>
+<body>
+<main>
+    <div class="page-header">
+        <h1>Tabla posicional</h1>
+        <p>Observa los dígitos en la tabla y escribe el número correcto.</p>
+    </div>
+
+    <section class="game-panel">
+        <div class="info-box">
+            <strong>Instrucción:</strong>
+            Mira los dígitos en miles, centenas, decenas y unidades. Luego escribe el número que forman.
+        </div>
+
+        <div id="questionLabel" class="linea-num"></div>
+        <div id="placeTable" class="table-posicional"></div>
+
+        <div class="answer-row">
+            <input type="text" id="studentNumber" placeholder="Escribe el número" autocomplete="off">
+            <button class="button" id="checkNumber">Comprobar</button>
+        </div>
+
+        <div class="actions">
+            <button class="button secondary" id="showWord">Mostrar lectura</button>
+            <button class="button secondary" id="resetNumber">Nuevo número</button>
+            <a class="link-box" href="lista.html">Volver a selección</a>
+        </div>
+
+        <div id="resultBox" class="result-box"></div>
+    </section>
+</main>
+<script src="js/juegoTres4t.js"></script>
+</body>
+</html>

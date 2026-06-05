@@ -15,9 +15,12 @@ function iniciarBienvenida4to() {
     const boton = document.getElementById("btnAprender4to");
     if (boton) {
         boton.addEventListener("click", () => {
-            hablar("¡Muy bien " + nombre + ". Pronto empezaremos a aprender 4to básico.");
+            hablar("Es hora de jugar");
             boton.classList.add("activo");
-            setTimeout(() => boton.classList.remove("activo"), 220);
+            setTimeout(() => {
+                boton.classList.remove("activo");
+                window.location.href = "lista.html";
+            }, 1500);
         });
     }
 }
