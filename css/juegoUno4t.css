@@ -20,7 +20,7 @@ main {
 .page-header h1 {
     font-size: clamp(2rem, 4vw, 4rem);
     margin: 0;
-    letter-spacing: 1px;
+    letter-spacing: 0;
     text-shadow: 0 0 10px rgba(255,255,255,.6);
 }
 
@@ -105,7 +105,7 @@ main {
     height: 100px;
     display: grid;
     place-items: center;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 800;
     cursor: grab;
     box-shadow: 0 12px 30px rgba(0,0,0,0.18);
@@ -152,6 +152,11 @@ main {
     background: rgba(255,255,255,0.7);
 }
 
+.actions {
+    justify-content: center;
+    margin: 18px 0;
+}
+
 .result-box {
     padding: 18px;
     border-radius: 22px;
@@ -183,4 +188,16 @@ a.link-box {
 
 a.link-box:hover {
     transform: translateY(-2px);
+}
+
+@media (max-width: 560px) {
+    .number-card,
+    .drop-zone {
+        width: 96px;
+        min-width: 96px;
+    }
+
+    .number-card {
+        font-size: 1.45rem;
+    }
 }

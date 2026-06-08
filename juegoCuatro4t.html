@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Juego Cuatro 4º Básico</title>
+    <link rel="stylesheet" href="css/juegoCuatro4t.css">
+</head>
+<body>
+<main>
+    <div class="page-header">
+        <h1 class="animated-title" aria-label="Encuentra los pares">
+            <span style="--delay:0s">E</span><span style="--delay:.04s">n</span><span style="--delay:.08s">c</span><span style="--delay:.12s">u</span><span style="--delay:.16s">e</span><span style="--delay:.20s">n</span><span style="--delay:.24s">t</span><span style="--delay:.28s">r</span><span style="--delay:.32s">a</span>
+            <span style="--delay:.36s">l</span><span style="--delay:.40s">o</span><span style="--delay:.44s">s</span>
+            <span style="--delay:.48s">p</span><span style="--delay:.52s">a</span><span style="--delay:.56s">r</span><span style="--delay:.60s">e</span><span style="--delay:.64s">s</span>
+        </h1>
+        <p>Da vuelta dos casillas. Si tienen el mismo número, el par queda descubierto.</p>
+    </div>
+
+    <section class="game-panel">
+        <div class="info-box">
+            <strong>Instrucción:</strong>
+            Encuentra 8 pares de números iguales. Observa, memoriza y compara cada número.
+        </div>
+
+        <div class="score-strip" aria-live="polite">
+            <div class="score-pill">
+                <span>Pares</span>
+                <strong id="pairsFound">0 / 8</strong>
+            </div>
+            <div class="score-pill">
+                <span>Intentos</span>
+                <strong id="triesCount">0</strong>
+            </div>
+            <div class="score-pill">
+                <span>Tiempo</span>
+                <strong id="timer">00:00</strong>
+            </div>
+        </div>
+
+        <div id="memoryBoard" class="memory-board" aria-label="Tablero de memoria con números"></div>
+
+        <div class="actions">
+            <button class="button" id="restartGame">Reiniciar tablero</button>
+            <a class="link-box" href="lista.html">Volver a selección</a>
+        </div>
+
+        <div id="resultBox" class="result-box">Elige una casilla azul para comenzar.</div>
+    </section>
+</main>
+<script src="js/juegoCuatro4t.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const audio = new Audio('sonidos/interfazLogin.mp3');
+        audio.play().catch(err => console.log('Error al reproducir sonido de entrada:', err));
+    });
+</script>
+</body>
+</html>

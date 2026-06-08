@@ -20,7 +20,7 @@ main {
 .page-header h1 {
     font-size: clamp(2rem, 4vw, 4rem);
     margin: 0;
-    letter-spacing: 1px;
+    letter-spacing: 0;
     text-shadow: 0 0 10px rgba(255,255,255,.6);
 }
 
@@ -92,25 +92,31 @@ main {
 
 .table-posicional {
     display: grid;
-    grid-template-columns: repeat(4, minmax(80px, 1fr));
+    grid-template-columns: repeat(4, minmax(90px, 1fr));
     gap: 12px;
     margin: 20px 0;
 }
 
 .table-posicional .cell {
-    background: #fef8e4;
+    background: linear-gradient(145deg, #fef8e4, #fff0a6);
     border: 3px solid #ffd05b;
     border-radius: 18px;
     min-height: 92px;
     padding: 10px;
     display: grid;
     place-items: center;
+    box-shadow: 0 10px 18px rgba(0,0,0,0.10);
 }
 
 .table-posicional .label {
     font-size: .85rem;
     color: #8f6e0b;
     margin-bottom: 8px;
+    font-weight: 800;
+}
+
+.table-posicional strong {
+    font-size: 2rem;
 }
 
 .answer-row {
@@ -118,6 +124,43 @@ main {
     flex-wrap: wrap;
     gap: 14px;
     justify-content: center;
+}
+
+.linea-num {
+    background: linear-gradient(135deg, #c6d8ff, #fff7e4);
+    border-radius: 24px;
+    padding: 18px;
+    text-align: center;
+    border: 3px solid #86b4ff;
+}
+
+.representation-panel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+}
+
+.representation-box {
+    background: #fffdf3;
+    border: 3px solid #ffd05b;
+    border-radius: 18px;
+    padding: 14px;
+    min-height: 82px;
+    display: grid;
+    align-content: center;
+    gap: 8px;
+}
+
+.representation-label {
+    color: #8f6e0b;
+    font-size: .86rem;
+    font-weight: 800;
+}
+
+.representation-box strong {
+    font-size: 1rem;
+    line-height: 1.35;
 }
 
 input[type="text"] {
@@ -173,5 +216,9 @@ a.link-box:hover {
 @media (max-width: 720px) {
     .table-posicional {
         grid-template-columns: repeat(2, minmax(80px, 1fr));
+    }
+
+    .representation-panel {
+        grid-template-columns: 1fr;
     }
 }

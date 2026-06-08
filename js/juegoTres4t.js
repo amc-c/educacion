@@ -1,21 +1,56 @@
+function reproducirAudio(sonido) {
+    const audio = new Audio(`sonidos/${sonido}`);
+    audio.play().catch(err => console.log('Error al reproducir sonido:', err));
+}
+
 function mostrarMensaje(text, correcto) {
     const resultBox = document.getElementById('resultBox');
     if (!resultBox) return;
     resultBox.textContent = text;
     resultBox.className = 'result-box';
     if (!correcto) resultBox.classList.add('error');
+    
+    if (correcto) {
+        reproducirAudio('bien.mp3');
+    } else {
+        reproducirAudio('error4TO.mp3');
+    }
 }
 
-const placeLabels = ['Miles', 'Centenas', 'Decenas', 'Unidades'];
+function formatNumber(number) {
+    return number.toLocaleString('es-CL');
+}
+
+function markCommonGameCompleted(gameId) {
+    localStorage.setItem(`ma04_common_game_${gameId}`, 'completed');
+}
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+const placeLabels = [
+    { label: 'Unidades de mil', value: 1000, short: 'UM' },
+    { label: 'Centenas', value: 100, short: 'C' },
+    { label: 'Decenas', value: 10, short: 'D' },
+    { label: 'Unidades', value: 1, short: 'U' }
+];
 
 let gameState = {
     number: null
 };
 
+function getDigits(number) {
+    return String(number).padStart(4, '0').split('').map(Number);
+}
+
 function initJuego() {
-    const digits = Array.from({ length: 4 }, () => Math.floor(Math.random() * 10));
-    if (digits[0] === 0) digits[0] = Math.floor(Math.random() * 9) + 1;
-    const number = Number(digits.join(''));
+    const number = Math.floor(Math.random() * 9000) + 1000;
+    const digits = getDigits(number);
     const table = document.getElementById('placeTable');
     const questionLabel = document.getElementById('questionLabel');
     const numberInput = document.getElementById('studentNumber');
@@ -24,26 +59,58 @@ function initJuego() {
     numberInput.value = '';
     resultBox.textContent = '';
     table.innerHTML = '';
-    questionLabel.textContent = 'Escribe el número que representa esta tabla posicional:';
-    
-    placeLabels.forEach((label, index) => {
+    questionLabel.textContent = 'Ordena mentalmente las posiciones y escribe el número que forman:';
+
+    const cells = placeLabels.map((place, index) => ({
+        ...place,
+        digit: digits[index]
+    }));
+
+    shuffle(cells).forEach(place => {
         const cell = document.createElement('div');
         cell.className = 'cell';
-        cell.innerHTML = `<span class="label">${label}</span><strong>${digits[index]}</strong>`;
+        cell.innerHTML = `<span class="label">${place.label}</span><strong>${place.digit}</strong>`;
         table.appendChild(cell);
     });
+
     gameState.number = number;
+    renderRepresentations(number, digits);
+}
+
+function renderRepresentations(number, digits) {
+    const panel = document.getElementById('representationPanel');
+    const expanded = digits
+        .map((digit, index) => digit * placeLabels[index].value)
+        .filter(value => value > 0);
+    const expandedText = expanded.length ? expanded.map(formatNumber).join(' + ') : '0';
+
+    panel.innerHTML = `
+        <div class="representation-box">
+            <span class="representation-label">Forma desarrollada</span>
+            <strong>${expandedText}</strong>
+        </div>
+        <div class="representation-box">
+            <span class="representation-label">Lectura</span>
+            <strong>${leerNumero(number)}</strong>
+        </div>
+    `;
 }
 
 function checkNumber() {
     const numberInput = document.getElementById('studentNumber');
-    const answer = Number(numberInput.value.trim());
+    const answer = Number(numberInput.value.trim().replace(/\./g, ''));
     if (!answer) {
         mostrarMensaje('Escribe un número para comprobar.', false);
         return;
     }
     const correcto = answer === gameState.number;
-    mostrarMensaje(correcto ? `¡Perfecto! Es el número ${gameState.number}.` : 'Todavía no es correcto. Revisa los dígitos en la tabla.', correcto);
+    if (correcto) markCommonGameCompleted('3');
+    mostrarMensaje(
+        correcto
+            ? `¡Perfecto! Es el número ${formatNumber(gameState.number)}. Misión 3 completada.`
+            : 'Todavía no es correcto. Recuerda ordenar: unidades de mil, centenas, decenas y unidades.',
+        correcto
+    );
 }
 
 function showWord() {
@@ -91,10 +158,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const checkButton = document.getElementById('checkNumber');
     const showButton = document.getElementById('showWord');
     const resetButton = document.getElementById('resetNumber');
-    
+
     if (checkButton) checkButton.addEventListener('click', checkNumber);
     if (showButton) showButton.addEventListener('click', showWord);
     if (resetButton) resetButton.addEventListener('click', resetNumber);
-    
+
     initJuego();
 });

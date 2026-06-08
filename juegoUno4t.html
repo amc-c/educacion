@@ -15,7 +15,7 @@
     <section class="game-panel">
         <div class="info-box">
             <strong>Instrucción:</strong>
-            Arrastra los números a las casillas en orden de menor a mayor. Usa el botón "Revisar" cuando termines.
+            Arrastra los números a las casillas en orden de menor a mayor. Compara primero los miles, luego centenas, decenas y unidades.
         </div>
 
         <div class="tile-pool" id="tilePool"></div>
@@ -32,5 +32,11 @@
     </section>
 </main>
 <script src="js/juegoUno4t.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const audio = new Audio('sonidos/interfazLogin.mp3');
+        audio.play().catch(err => console.log('Error al reproducir sonido de entrada:', err));
+    });
+</script>
 </body>
 </html>

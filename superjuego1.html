@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Superjuego Carretera</title>
+    <link rel="stylesheet" href="css/superjuego.css">
+</head>
+<body>
+<main class="supergame-layout">
+    <section class="game-panel">
+        <header class="page-header">
+            <h1>Superjuego Carretera</h1>
+            <p>Usa W / ↑ y S / ↓ para elegir el auto. Presiona ENTER para confirmar tu respuesta.</p>
+        </header>
+
+        <div class="game-body">
+            <div class="road-area" aria-label="Carretera con autos en tres pistas">
+                <div class="road">
+                    <div class="lane lane-top"></div>
+                    <div class="lane lane-middle"></div>
+                    <div class="lane lane-bottom"></div>
+                    <div class="car car-red" id="car0"><span>R</span></div>
+                    <div class="car car-green" id="car1"><span>G</span></div>
+                    <div class="car car-yellow" id="car2"><span>Y</span></div>
+                </div>
+            </div>
+
+            <aside class="panel-side">
+                <div class="question-box">
+                    <p class="question-label">Pregunta</p>
+                    <h2 id="questionText">Aquí va la pregunta</h2>
+                </div>
+                <div class="answers-list">
+                    <button id="answer0" class="answer-card"></button>
+                    <button id="answer1" class="answer-card"></button>
+                    <button id="answer2" class="answer-card"></button>
+                </div>
+            </aside>
+        </div>
+
+        <div class="status-bar">
+            <span id="questionCounter">1 / 8</span>
+            <span id="scoreCounter">Puntos: 0</span>
+            <span id="instructionText">Selecciona un auto y presiona ENTER.</span>
+        </div>
+
+        <div id="feedback" class="feedback">Elige el auto correspondiente a la respuesta correcta.</div>
+
+        <div class="actions">
+            <button id="restartButton" class="button">Reiniciar</button>
+            <a class="link-box" href="lista.html">Volver a selección</a>
+        </div>
+    </section>
+</main>
+
+<div id="finishOverlay" class="finish-overlay" aria-hidden="true">
+    <div class="finish-card">
+        <div class="finish-badge">¡Superjuego completado!</div>
+        <h2>¡Eres un campeón de la carretera!</h2>
+        <p id="finishText">Respondiste 8 preguntas con estilo.</p>
+        <div class="finish-actions">
+            <button id="playAgainButton" class="finish-button">Jugar otra vez</button>
+            <a class="link-box" href="lista.html">Volver a selección</a>
+        </div>
+    </div>
+</div>
+
+<script src="js/superjuego.js"></script>
+</body>
+</html>

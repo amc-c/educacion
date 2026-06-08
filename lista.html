@@ -8,27 +8,61 @@
 <body>
 <main>
     <div class="page-header">
-        <h1>Elige tu juego</h1>
-        <p>Ordena números, compara cuál es mayor o menor y aprende a leer números hasta 10.000 con juegos fáciles y divertidos.</p>
+        <h1>Números y comparación</h1>
+        <p>Aprenderás a ordenar números de menor a mayor y a reconocer cuál número es más grande o más pequeño.</p>
+        <div class="objective-box">
+            <strong>MA04 OA 01</strong>
+            Reconocer, leer, escribir, comparar y ordenar números naturales hasta 10.000 usando recta numérica, tabla posicional y diferentes representaciones.
+        </div>
+        <div class="progress-box">
+            <span id="progressText">0 de 4 completadas</span>
+        </div>
     </div>
 
     <div class="cards">
-        <div class="card">
+        <div class="card" data-game-card="1">
+            <div class="mission-badge">Pendiente</div>
             <h2 class="card-title">Juego 1: Ordenar números</h2>
-            <p>Arrastra los números para colocarlos de menor a mayor. Perfecto para aprender a comparar y ordenar.</p>
+            <p>Arrastra números hasta 10.000 y ordénalos de menor a mayor comparando miles, centenas, decenas y unidades.</p>
             <a class="link-box" href="juegoUno4t.html">Ir al juego 1</a>
         </div>
-        <div class="card">
+        <div class="card" data-game-card="2">
+            <div class="mission-badge">Pendiente</div>
             <h2 class="card-title">Juego 2: Más grande o más pequeño</h2>
-            <p>Elige cuál número es el mayor o el menor. Rápido, claro y colorido para practicar reconocimiento.</p>
+            <p>Elige el mayor o el menor y observa cómo se ubican los números en una recta numérica.</p>
             <a class="link-box" href="juegoDos4t.html">Ir al juego 2</a>
         </div>
-        <div class="card">
+        <div class="card" data-game-card="3">
+            <div class="mission-badge">Pendiente</div>
             <h2 class="card-title">Juego 3: Tabla posicional</h2>
-            <p>Lee los dígitos en una tabla de unidades, decenas, centenas y miles, y escribe el número correcto.</p>
+            <p>Lee, escribe y representa números con decenas de mil, miles, centenas, decenas y unidades.</p>
             <a class="link-box" href="juegoTres4t.html">Ir al juego 3</a>
+        </div>
+        <div class="card" data-game-card="4">
+            <div class="mission-badge">Pendiente</div>
+            <h2 class="card-title">Juego 4: Encuentra los pares</h2>
+            <p>Da vuelta casillas, memoriza los números y junta 8 pares iguales antes de completar el tablero.</p>
+            <a class="link-box" href="juegoCuatro4t.html">Ir al juego 4</a>
+        </div>
+        <div class="card super-card" data-game-card="super" style="display: none;">
+            <div class="mission-badge super-badge">⭐ Desbloqueado</div>
+            <h2 class="card-title">🚗 Superjuego Carretera</h2>
+            <p>¡Desafío final! Demuestra tu maestría en un juego épico con autos y preguntas desafiantes. ¡Prepárate para la velocidad!</p>
+            <a class="link-box super-link" href="superjuego1.html">Ir al Superjuego</a>
+        </div>
+    </div>
+    <div id="superUnlock" class="unlock-overlay">
+        <div class="unlock-card">
+            <div class="unlock-badge">¡Superjuegos desbloqueados!</div>
+            <h2>¡Felicidades!</h2>
+            <p>Completaste los 4 juegos y desbloqueaste los Superjuegos. ¡Prepárate para nuevos retos!</p>
+            <div class="unlock-actions">
+                <button id="playSuperButton" class="unlock-button primary">Jugar Superjuego</button>
+                <button id="closeUnlockButton" class="unlock-button secondary">Cerrar</button>
+            </div>
         </div>
     </div>
 </main>
+<script src="js/lista.js"></script>
 </body>
 </html>

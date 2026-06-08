@@ -10,6 +10,12 @@ function iniciarBienvenida4to() {
     document.getElementById("nombreUsuario").textContent = nombre;
     document.getElementById("avatar4to").src = avatar;
 
+    const audio4to = new Audio("sonidos/login4to.mp3");
+    audio4to.volume = 0.9;
+    audio4to.play().catch(() => {
+        // si no se puede autoplay, ignorar
+    });
+
     hablar("Hola " + nombre + " bienvenido");
 
     const boton = document.getElementById("btnAprender4to");

@@ -35,6 +35,13 @@ function iniciarBienvenida() {
 
     avatarImg.src = avatar;
 
+    // Audio de bienvenida
+    const audioInicio = new Audio("sonidos/login1ER.mp3");
+    audioInicio.volume = 0.9;
+    audioInicio.play().catch(() => {
+        // Autoplay puede bloquearse en algunos navegadores
+    });
+
     // Voz bienvenida
     hablar(
         "Hola " + nombre +
@@ -53,10 +60,10 @@ function iniciarBienvenida() {
     let boton4to = document.getElementById("btnAprender4to");
 
     if (boton4to) {
-        boton4to.addEventListener(
-            "click",
-            irABienvenida4to
-        );
+        boton4to.addEventListener("click", () => {
+            boton4to.classList.add("resaltar");
+            window.location.href = "bienvenida4to.html";
+        });
     }
 }
 

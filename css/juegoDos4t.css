@@ -20,7 +20,7 @@ main {
 .page-header h1 {
     font-size: clamp(2rem, 4vw, 4rem);
     margin: 0;
-    letter-spacing: 1px;
+    letter-spacing: 0;
     text-shadow: 0 0 10px rgba(255,255,255,.6);
 }
 
@@ -101,12 +101,34 @@ main {
     min-width: 115px;
 }
 
+.answer-button:disabled {
+    cursor: default;
+    opacity: .86;
+    transform: none;
+}
+
+.answer-button.is-correct {
+    background: linear-gradient(135deg, #22c55e, #15803d);
+    box-shadow: 0 12px 24px rgba(34, 197, 94, 0.28);
+}
+
+.answer-button.selected-wrong {
+    background: linear-gradient(135deg, #ff6b6b, #b91c1c);
+    box-shadow: 0 12px 24px rgba(239, 68, 68, 0.28);
+}
+
+.answer-button.selected-correct {
+    outline: 4px solid #fff176;
+    outline-offset: 3px;
+}
+
 .linea-num {
     background: linear-gradient(135deg, #c6d8ff, #fff7e4);
     border-radius: 24px;
     padding: 22px;
     text-align: center;
     border: 3px solid #86b4ff;
+    margin-bottom: 18px;
 }
 
 .linea-num span {
@@ -118,6 +140,70 @@ main {
     box-shadow: inset 0 0 6px rgba(0,0,0,0.08);
     font-size: 1.2rem;
     min-width: 70px;
+}
+
+.number-line-card {
+    background: #fffdf3;
+    border: 3px solid #ffd05b;
+    border-radius: 22px;
+    padding: 30px 18px 14px;
+    margin-bottom: 18px;
+}
+
+.number-line {
+    position: relative;
+    height: 188px;
+    margin: 0 12px;
+}
+
+.number-line::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 172px;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #34c6ff, #ff9c3f);
+}
+
+.number-marker {
+    position: absolute;
+    top: var(--marker-top, 4px);
+    transform: translateX(-50%);
+    min-width: 74px;
+    padding: 8px 9px;
+    border-radius: 14px;
+    background: #ffffff;
+    border: 2px solid #7aa7ff;
+    color: #2f1b60;
+    font-weight: 800;
+    text-align: center;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+}
+
+.number-marker::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 4px;
+    height: var(--stem-height, 66px);
+    transform: translateX(-50%);
+    background: #2f1b60;
+    border-radius: 999px;
+}
+
+.number-line-labels {
+    display: flex;
+    justify-content: space-between;
+    color: #6b4d08;
+    font-weight: 800;
+}
+
+.actions {
+    justify-content: center;
+    margin: 18px 0;
 }
 
 .result-box {
@@ -151,4 +237,17 @@ a.link-box {
 
 a.link-box:hover {
     transform: translateY(-2px);
+}
+
+@media (max-width: 620px) {
+    .number-line-card {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .number-marker {
+        min-width: 58px;
+        font-size: .82rem;
+        padding: 7px 6px;
+    }
 }

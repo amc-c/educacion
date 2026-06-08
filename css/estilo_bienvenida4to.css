@@ -17,13 +17,14 @@ body {
 .contenedor {
     max-width: 420px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     border-radius: 28px;
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
     text-align: center;
     padding: 36px 28px;
     position: relative;
     overflow: hidden;
+    animation: entrada4to 0.9s ease-out;
 }
 
 .contenedor::before {
@@ -37,12 +38,39 @@ body {
     right: -40px;
 }
 
-.caja-avatar {
-    background: linear-gradient(135deg, #76c7ff, #4f9fff);
-    padding: 12px;
-    border-radius: 32px;
-    display: inline-block;
-    margin-bottom: 24px;
+@keyframes entrada4to {
+    0% {
+        opacity: 0;
+        transform: scale(0.94) translateY(22px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+button {
+    background: linear-gradient(135deg, #f9a826, #f55d5d);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 16px 32px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 14px 30px rgba(245, 93, 93, 0.25);
+    animation: pulsarBoton 1.8s ease-in-out infinite 0.4s;
+}
+
+@keyframes pulsarBoton {
+    0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 14px 30px rgba(245, 93, 93, 0.25);
+    }
+    50% {
+        transform: translateY(-3px);
+        box-shadow: 0 22px 36px rgba(245, 93, 93, 0.3);
+    }
 }
 
 #avatar4to {
@@ -64,18 +92,6 @@ h1 {
     margin-bottom: 28px;
     font-size: 1rem;
     line-height: 1.5;
-}
-
-button {
-    background: linear-gradient(135deg, #f9a826, #f55d5d);
-    color: #fff;
-    border: none;
-    border-radius: 16px;
-    padding: 16px 32px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    box-shadow: 0 14px 30px rgba(245, 93, 93, 0.25);
 }
 
 button:hover {
