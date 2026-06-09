@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Juego Cuatro 4º Básico</title>
     <link rel="stylesheet" href="css/juegoCuatro4t.css">
+    <link rel="stylesheet" href="css/efectos4to.css">
 </head>
 <body>
 <main>
@@ -14,6 +15,10 @@
             <span style="--delay:.48s">p</span><span style="--delay:.52s">a</span><span style="--delay:.56s">r</span><span style="--delay:.60s">e</span><span style="--delay:.64s">s</span>
         </h1>
         <p>Da vuelta dos casillas. Si tienen el mismo número, el par queda descubierto.</p>
+        <div class="voice-guide">
+            <p id="voiceGuideText">Toca una casilla azul para ver su número. Luego toca otra casilla y busca el mismo número. Si son iguales, el par queda descubierto. Encuentra los ocho pares.</p>
+            <button id="voiceGuideButton" class="voice-button" type="button">Altavoz</button>
+        </div>
     </div>
 
     <section class="game-panel">
@@ -47,12 +52,7 @@
         <div id="resultBox" class="result-box">Elige una casilla azul para comenzar.</div>
     </section>
 </main>
+<script src="js/efectos4to.js"></script>
 <script src="js/juegoCuatro4t.js"></script>
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const audio = new Audio('sonidos/interfazLogin.mp3');
-        audio.play().catch(err => console.log('Error al reproducir sonido de entrada:', err));
-    });
-</script>
 </body>
 </html>

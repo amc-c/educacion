@@ -12,6 +12,7 @@ function mostrarMensaje(text, correcto) {
     
     if (correcto) {
         reproducirAudio('bien.mp3');
+        window.FourthGradeTools?.burstConfetti(90);
     } else {
         reproducirAudio('error4TO.mp3');
     }
@@ -162,6 +163,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (checkButton) checkButton.addEventListener('click', checkNumber);
     if (showButton) showButton.addEventListener('click', showWord);
     if (resetButton) resetButton.addEventListener('click', resetNumber);
+    window.FourthGradeTools?.setupVoiceGuide(document.getElementById('voiceGuideText')?.textContent, 'voiceGuideButton');
 
     initJuego();
 });

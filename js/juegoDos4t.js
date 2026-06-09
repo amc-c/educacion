@@ -28,6 +28,7 @@ function mostrarMensaje(text, correcto) {
     
     if (correcto) {
         reproducirAudio('bien.mp3');
+        window.FourthGradeTools?.burstConfetti(90);
     } else {
         reproducirAudio('error4TO.mp3');
     }
@@ -134,5 +135,6 @@ function answerQuestion(selectedButton) {
 window.addEventListener('DOMContentLoaded', () => {
     const newQuestionButton = document.getElementById('newQuestion');
     if (newQuestionButton) newQuestionButton.addEventListener('click', initJuego);
+    window.FourthGradeTools?.setupVoiceGuide(document.getElementById('voiceGuideText')?.textContent, 'voiceGuideButton');
     initJuego();
 });
