@@ -2,52 +2,68 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Superjuego Carretera</title>
+    <title>Superjuego Carrera Numérica</title>
     <link rel="stylesheet" href="css/superjuego.css">
+    <link rel="stylesheet" href="css/efectos4to.css">
 </head>
 <body>
 <main class="supergame-layout">
     <section class="game-panel">
         <header class="page-header">
-            <h1>Superjuego Carretera</h1>
-            <p>Usa W / ↑ y S / ↓ para elegir el auto. Presiona ENTER para confirmar tu respuesta.</p>
+            <span class="super-label">SuperJuego 1</span>
+            <h1>Carrera Numérica</h1>
+            <div class="guide-box">
+                <p id="guideText">Mira la pregunta, elige el auto que lleva la respuesta correcta y toca el auto para responder. También puedes usar W o flecha arriba para subir, S o flecha abajo para bajar, y ENTER para confirmar.</p>
+                <button id="speakGuide" class="speaker-button" type="button" aria-label="Repetir explicación">Altavoz</button>
+            </div>
         </header>
 
-        <div class="game-body">
-            <div class="road-area" aria-label="Carretera con autos en tres pistas">
-                <div class="road">
-                    <div class="lane lane-top"></div>
-                    <div class="lane lane-middle"></div>
-                    <div class="lane lane-bottom"></div>
-                    <div class="car car-red" id="car0"><span>R</span></div>
-                    <div class="car car-green" id="car1"><span>G</span></div>
-                    <div class="car car-yellow" id="car2"><span>Y</span></div>
-                </div>
+        <div class="question-zone">
+            <div class="question-box">
+                <p class="question-label">Pregunta de carrera</p>
+                <h2 id="questionText">Preparando pregunta...</h2>
+            </div>
+            <div class="race-stats">
+                <span id="questionCounter">1 / 8</span>
+                <span id="scoreCounter">Puntos: 0</span>
+            </div>
+        </div>
+
+        <div class="race-track" aria-label="Carretera con tres autos de respuesta">
+            <div class="finish-line" aria-hidden="true">
+                <span>META</span>
             </div>
 
-            <aside class="panel-side">
-                <div class="question-box">
-                    <p class="question-label">Pregunta</p>
-                    <h2 id="questionText">Aquí va la pregunta</h2>
-                </div>
-                <div class="answers-list">
-                    <button id="answer0" class="answer-card"></button>
-                    <button id="answer1" class="answer-card"></button>
-                    <button id="answer2" class="answer-card"></button>
-                </div>
-            </aside>
+            <button class="car-lane selected" id="answer0" data-index="0" type="button">
+                <span class="answer-pill" id="answerText0"></span>
+                <span class="driver-name">Auto rojo</span>
+                <span class="car-wrap" id="car0">
+                    <img src="img/autoRojo.png" alt="Auto rojo">
+                </span>
+            </button>
+
+            <button class="car-lane" id="answer1" data-index="1" type="button">
+                <span class="answer-pill" id="answerText1"></span>
+                <span class="driver-name">Auto azul</span>
+                <span class="car-wrap" id="car1">
+                    <img src="img/autoAzul.png" alt="Auto azul">
+                </span>
+            </button>
+
+            <button class="car-lane" id="answer2" data-index="2" type="button">
+                <span class="answer-pill" id="answerText2"></span>
+                <span class="driver-name">Auto amarillo</span>
+                <span class="car-wrap" id="car2">
+                    <img src="img/autoAmarillo.png" alt="Auto amarillo">
+                </span>
+            </button>
         </div>
 
-        <div class="status-bar">
-            <span id="questionCounter">1 / 8</span>
-            <span id="scoreCounter">Puntos: 0</span>
-            <span id="instructionText">Selecciona un auto y presiona ENTER.</span>
-        </div>
-
-        <div id="feedback" class="feedback">Elige el auto correspondiente a la respuesta correcta.</div>
+        <div id="feedback" class="feedback">Toca un auto o usa W/S y ENTER para responder.</div>
 
         <div class="actions">
-            <button id="restartButton" class="button">Reiniciar</button>
+            <button id="restartButton" class="button">Reiniciar carrera</button>
+            <button id="nextQuestionButton" class="button secondary" disabled>Siguiente pregunta</button>
             <a class="link-box" href="lista.html">Volver a selección</a>
         </div>
     </section>
@@ -55,9 +71,9 @@
 
 <div id="finishOverlay" class="finish-overlay" aria-hidden="true">
     <div class="finish-card">
-        <div class="finish-badge">¡Superjuego completado!</div>
-        <h2>¡Eres un campeón de la carretera!</h2>
-        <p id="finishText">Respondiste 8 preguntas con estilo.</p>
+        <div class="finish-badge">Superjuego completado</div>
+        <h2>Terminaste la carrera</h2>
+        <p id="finishText">Respondiste 8 preguntas.</p>
         <div class="finish-actions">
             <button id="playAgainButton" class="finish-button">Jugar otra vez</button>
             <a class="link-box" href="lista.html">Volver a selección</a>
@@ -65,6 +81,9 @@
     </div>
 </div>
 
+<audio id="correctSound" src="sonidos/bien.mp3" preload="auto"></audio>
+<audio id="errorSound" src="sonidos/error4TO.mp3" preload="auto"></audio>
+<script src="js/efectos4to.js"></script>
 <script src="js/superjuego.js"></script>
 </body>
 </html>

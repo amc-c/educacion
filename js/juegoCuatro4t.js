@@ -112,6 +112,7 @@ function checkPair() {
 
     if (isPair) {
         reproducirAudio('bien.mp3');
+        window.FourthGradeTools?.burstConfetti(75);
         setTimeout(() => {
             gameState.firstCard.classList.add('is-matched');
             gameState.secondCard.classList.add('is-matched');
@@ -154,6 +155,7 @@ function clearSelection() {
 function finishGame() {
     stopTimer();
     markCommonGameCompleted('4');
+    window.FourthGradeTools?.startConfettiRain(3600, 170);
     const panel = document.querySelector('.game-panel');
     panel.classList.add('celebration');
     mostrarMensaje(`¡Juego completo! Encontraste los 8 pares en ${gameState.tries} intentos. Misión 4 completada.`);
@@ -186,5 +188,6 @@ function initGame() {
 window.addEventListener('DOMContentLoaded', () => {
     const restartButton = document.getElementById('restartGame');
     if (restartButton) restartButton.addEventListener('click', initGame);
+    window.FourthGradeTools?.setupVoiceGuide(document.getElementById('voiceGuideText')?.textContent, 'voiceGuideButton');
     initGame();
 });

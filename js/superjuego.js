@@ -1,75 +1,22 @@
-const QUESTION_POOL = [
-    {
-        text: '2 decenas y 5 unidades, ¿qué número forma?',
-        options: ['25', '52', '205'],
-        correctIndex: 0
-    },
-    {
-        text: '7 centenas y 3 unidades, ¿qué número es?',
-        options: ['703', '730', '37'],
-        correctIndex: 0
-    },
-    {
-        text: '4 miles y 8 decenas, ¿qué número aparece?',
-        options: ['4080', '4800', '8040'],
-        correctIndex: 0
-    },
-    {
-        text: '¿Cuál es mayor? 3.205 o 3.250',
-        options: ['3.205', '3.250', '3.052'],
-        correctIndex: 1
-    },
-    {
-        text: '¿Cuál es menor? 4.008 o 4.080',
-        options: ['4.008', '4.080', '4.800'],
-        correctIndex: 0
-    },
-    {
-        text: '5 unidades de mil, 2 centenas y 9 unidades, ¿qué número es?',
-        options: ['5209', '5290', '5029'],
-        correctIndex: 0
-    },
-    {
-        text: '¿Qué número tiene 7 miles, 5 centenas y 2 unidades?',
-        options: ['7502', '7250', '5720'],
-        correctIndex: 0
-    },
-    {
-        text: 'Si sumas 1 decena y 6 unidades a 40, ¿cuál es el resultado?',
-        options: ['46', '64', '50'],
-        correctIndex: 0
-    },
-    {
-        text: '¿Cuál es mayor? 8.007 o 7.999',
-        options: ['8.007', '7.999', '8.070'],
-        correctIndex: 0
-    },
-    {
-        text: '¿Qué número representa 3 centenas, 4 decenas y 8 unidades?',
-        options: ['348', '384', '438'],
-        correctIndex: 0
-    },
-    {
-        text: '¿Cuál es correcto para 9 decenas y 1 unidad?',
-        options: ['91', '19', '901'],
-        correctIndex: 0
-    },
-    {
-        text: '¿Cuál número es más pequeño? 2.010 o 2.100',
-        options: ['2.010', '2.100', '2.001'],
-        correctIndex: 0
-    }
-];
-
-const TOTAL_QUESTIONS = 8;
+const TOTAL_QUESTIONS = 10;
+const FINISH_STEPS = 6;
 const CAR_IDS = ['car0', 'car1', 'car2'];
 const ANSWER_IDS = ['answer0', 'answer1', 'answer2'];
+const ANSWER_TEXT_IDS = ['answerText0', 'answerText1', 'answerText2'];
+const GUIDE_TEXT = 'Mira la pregunta, elige el auto que lleva la respuesta correcta y toca el auto para responder. También puedes usar W o flecha arriba para subir, S o flecha abajo para bajar, y Enter para confirmar.';
+
 let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let selectedCar = 0;
 let isAnswering = false;
+let waitingNextQuestion = false;
 let carProgress = [0, 0, 0];
+let correctPlacementPlan = [];
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 function shuffle(array) {
     const copy = [...array];
@@ -80,8 +27,143 @@ function shuffle(array) {
     return copy;
 }
 
+function formatNumber(number) {
+    return number.toLocaleString('es-CL');
+}
+
+function formatOrder(numbers, separator) {
+    return numbers.map(formatNumber).join(` ${separator} `);
+}
+
+function playSound(id) {
+    const audio = document.getElementById(id);
+    if (!audio) return;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+}
+
+function speakGuide() {
+    window.FourthGradeTools?.speakText(GUIDE_TEXT);
+}
+
+function makeOptions(correct, distractors) {
+    const values = new Set([correct]);
+    distractors.forEach(value => {
+        if (value > 0 && value <= 10000) values.add(value);
+    });
+    while (values.size < 3) {
+        values.add(randomInt(1, 10000));
+    }
+    const options = shuffle([...values].slice(0, 3));
+    return {
+        options: options.map(formatNumber),
+        correctIndex: options.indexOf(correct)
+    };
+}
+
+function buildPlaceValueQuestion() {
+    const thousands = randomInt(1, 9);
+    const hundreds = randomInt(0, 9);
+    const tens = randomInt(0, 9);
+    const units = randomInt(0, 9);
+    const number = thousands * 1000 + hundreds * 100 + tens * 10 + units;
+    const { options, correctIndex } = makeOptions(number, [
+        thousands * 1000 + tens * 100 + hundreds * 10 + units,
+        thousands * 1000 + hundreds * 100 + units * 10 + tens,
+        hundreds * 1000 + thousands * 100 + tens * 10 + units
+    ]);
+
+    return {
+        text: `${thousands} unidades de mil, ${hundreds} centenas, ${tens} decenas y ${units} unidades. ¿Qué número es?`,
+        options,
+        correctIndex
+    };
+}
+
+function buildExpandedQuestion() {
+    const thousands = randomInt(1, 9) * 1000;
+    const hundreds = randomInt(0, 9) * 100;
+    const tens = randomInt(0, 9) * 10;
+    const units = randomInt(0, 9);
+    const number = thousands + hundreds + tens + units;
+    const parts = [thousands, hundreds, tens, units].filter(value => value > 0);
+    const { options, correctIndex } = makeOptions(number, [
+        thousands + tens + hundreds + units,
+        Math.max(1, number - randomInt(10, 200)),
+        Math.min(10000, number + randomInt(10, 200))
+    ]);
+
+    return {
+        text: `Forma el número: ${parts.map(formatNumber).join(' + ')}`,
+        options,
+        correctIndex
+    };
+}
+
+function buildOrderingQuestion() {
+    const values = new Set();
+    while (values.size < 3) values.add(randomInt(1000, 9999));
+    const numbers = shuffle([...values]);
+    const descending = Math.random() > 0.5;
+    const correctNumbers = [...numbers].sort((a, b) => descending ? b - a : a - b);
+    const separator = descending ? '>' : '<';
+    const correct = formatOrder(correctNumbers, separator);
+    const permutations = [
+        [numbers[0], numbers[1], numbers[2]],
+        [numbers[0], numbers[2], numbers[1]],
+        [numbers[1], numbers[0], numbers[2]],
+        [numbers[1], numbers[2], numbers[0]],
+        [numbers[2], numbers[0], numbers[1]],
+        [numbers[2], numbers[1], numbers[0]]
+    ];
+    const distractors = [...new Set(permutations.map(option => formatOrder(option, separator)))]
+        .filter(option => option !== correct);
+    const options = shuffle([correct, ...shuffle(distractors).slice(0, 2)]);
+
+    return {
+        text: `¿Cómo sería el orden de ${descending ? 'mayor a menor' : 'menor a mayor'} entre ${numbers.map(formatNumber).join(', ')}?`,
+        options,
+        correctIndex: options.indexOf(correct)
+    };
+}
+
+function createQuestion() {
+    const builders = [
+        buildPlaceValueQuestion,
+        buildExpandedQuestion,
+        buildOrderingQuestion,
+        buildOrderingQuestion
+    ];
+    return builders[randomInt(0, builders.length - 1)]();
+}
+
 function pickQuestions() {
-    return shuffle(QUESTION_POOL).slice(0, TOTAL_QUESTIONS);
+    return Array.from({ length: TOTAL_QUESTIONS }, createQuestion);
+}
+
+function buildCorrectPlacementPlan() {
+    const winnerCar = randomInt(0, 2);
+    const otherCars = [0, 1, 2].filter(index => index !== winnerCar);
+    const plan = Array.from({ length: FINISH_STEPS }, () => winnerCar);
+
+    while (plan.length < TOTAL_QUESTIONS) {
+        plan.push(otherCars[plan.length % otherCars.length]);
+    }
+
+    return shuffle(plan);
+}
+
+function placeCorrectAnswer(question, desiredIndex) {
+    const options = [...question.options];
+    const correctValue = options[question.correctIndex];
+    options[question.correctIndex] = options[desiredIndex];
+    options[desiredIndex] = correctValue;
+
+    return {
+        ...question,
+        options,
+        correctIndex: desiredIndex
+    };
 }
 
 function updateScoreBar() {
@@ -89,17 +171,21 @@ function updateScoreBar() {
     document.getElementById('scoreCounter').textContent = `Puntos: ${score}`;
 }
 
+function setNextButtonEnabled(enabled) {
+    const nextButton = document.getElementById('nextQuestionButton');
+    nextButton.disabled = !enabled;
+}
+
 function updateRoad() {
-    const road = document.querySelector('.road');
-    const roadWidth = road.getBoundingClientRect().width;
-    const maxMove = roadWidth - 180;
+    const track = document.querySelector('.race-track');
+    const trackWidth = track.getBoundingClientRect().width;
+    const maxMove = Math.max(80, trackWidth - 430);
 
     CAR_IDS.forEach((id, index) => {
         const car = document.getElementById(id);
-        const step = Math.min(carProgress[index], TOTAL_QUESTIONS);
-        const offset = Math.round((step / TOTAL_QUESTIONS) * maxMove);
-        car.style.transform = `translateX(${offset}px)`;
-        car.classList.toggle('moved', offset > 10);
+        const step = Math.min(carProgress[index], FINISH_STEPS);
+        const offset = Math.round((step / FINISH_STEPS) * maxMove);
+        car.style.setProperty('--x', `${offset}px`);
     });
 }
 
@@ -107,21 +193,23 @@ function renderQuestion() {
     const question = questions[currentQuestionIndex];
     document.getElementById('questionText').textContent = question.text;
     question.options.forEach((value, index) => {
-        const answer = document.getElementById(ANSWER_IDS[index]);
-        answer.textContent = value;
-        answer.classList.remove('selected');
+        const lane = document.getElementById(ANSWER_IDS[index]);
+        const answerText = document.getElementById(ANSWER_TEXT_IDS[index]);
+        answerText.textContent = value;
+        lane.dataset.correct = index === question.correctIndex ? 'true' : 'false';
+        lane.disabled = false;
+        lane.classList.remove('selected', 'correct', 'wrong', 'boost');
     });
     selectedCar = 0;
     highlightSelectedCar();
     updateScoreBar();
-    showFeedback('Selecciona el auto correcto y presiona ENTER.', true);
+    showFeedback('Toca el auto que lleva la respuesta correcta.', true);
     isAnswering = false;
+    waitingNextQuestion = false;
+    setNextButtonEnabled(false);
 }
 
 function highlightSelectedCar() {
-    CAR_IDS.forEach((id, index) => {
-        document.getElementById(id).classList.toggle('selected', index === selectedCar);
-    });
     ANSWER_IDS.forEach((id, index) => {
         document.getElementById(id).classList.toggle('selected', index === selectedCar);
     });
@@ -130,7 +218,7 @@ function highlightSelectedCar() {
 function showFeedback(message, success = true) {
     const feedback = document.getElementById('feedback');
     feedback.textContent = message;
-    feedback.style.color = success ? '#c8f7c5' : '#ffb3b3';
+    feedback.classList.toggle('error', !success);
 }
 
 function advanceSelection(delta) {
@@ -139,56 +227,82 @@ function advanceSelection(delta) {
     highlightSelectedCar();
 }
 
-function answerQuestion() {
-    if (isAnswering) return;
+function answerQuestion(index = selectedCar) {
+    if (isAnswering || waitingNextQuestion) return;
     isAnswering = true;
+    selectedCar = index;
+    highlightSelectedCar();
+
     const question = questions[currentQuestionIndex];
     const correct = selectedCar === question.correctIndex;
-    const selectedCarEl = document.getElementById(CAR_IDS[selectedCar]);
+    const selectedLane = document.getElementById(ANSWER_IDS[selectedCar]);
+    const correctLane = document.getElementById(ANSWER_IDS[question.correctIndex]);
+
+    ANSWER_IDS.forEach(id => {
+        document.getElementById(id).disabled = true;
+    });
 
     if (correct) {
         score += 1;
         carProgress[selectedCar] += 1;
-        selectedCarEl.style.boxShadow = '0 0 30px rgba(118, 255, 180, 0.95)';
-        showFeedback('¡Correcto! Tu auto avanzó en la pista.', true);
+        selectedLane.classList.add('correct', 'boost');
+        playSound('correctSound');
+        showFeedback('¡Correcto! Ese auto aceleró hacia la meta.', true);
     } else {
-        selectedCarEl.style.boxShadow = '0 0 30px rgba(255, 105, 105, 0.95)';
-        showFeedback('No es correcto. Elige otro auto en la siguiente pregunta.', false);
+        selectedLane.classList.add('wrong');
+        correctLane.classList.add('correct');
+        playSound('errorSound');
+        showFeedback(`No era ese auto. La respuesta correcta era ${question.options[question.correctIndex]}.`, false);
     }
 
     updateRoad();
-    highlightSelectedCar();
+    updateScoreBar();
 
-    setTimeout(() => {
-        selectedCarEl.style.boxShadow = '';
-        if (currentQuestionIndex + 1 < TOTAL_QUESTIONS) {
-            currentQuestionIndex += 1;
-            renderQuestion();
-        } else {
-            finishGame();
-        }
-    }, 900);
+    waitingNextQuestion = true;
+    setNextButtonEnabled(true);
+
+    if (currentQuestionIndex + 1 < TOTAL_QUESTIONS) {
+        showFeedback(
+            correct
+                ? '¡Correcto! Ese auto aceleró hacia la meta. Presiona “Siguiente pregunta” para continuar.'
+                : `No era ese auto. La respuesta correcta era ${question.options[question.correctIndex]}. Presiona “Siguiente pregunta” para continuar.`,
+            correct
+        );
+    } else {
+        setNextButtonEnabled(false);
+        setTimeout(finishGame, 900);
+    }
+}
+
+function goToNextQuestion() {
+    if (!waitingNextQuestion || currentQuestionIndex + 1 >= TOTAL_QUESTIONS) return;
+    currentQuestionIndex += 1;
+    renderQuestion();
 }
 
 function finishGame() {
     const overlay = document.getElementById('finishOverlay');
     const finishText = document.getElementById('finishText');
     const resultText = score === TOTAL_QUESTIONS
-        ? '¡Excelente! Respondiste todas perfecto.'
-        : `Obtuviste ${score} de ${TOTAL_QUESTIONS}. ¡Muy bien!`;
+        ? '¡Excelente! Contestaste todas correctamente y ganaste la carrera.'
+        : `Obtuviste ${score} de ${TOTAL_QUESTIONS}. Vuelve a correr para mejorar tu marca.`;
     finishText.textContent = resultText;
     overlay.classList.add('visible');
     overlay.setAttribute('aria-hidden', 'false');
+    window.FourthGradeTools?.startConfettiRain(5200, 240);
     localStorage.setItem('superjuego1_completado', 'true');
 }
 
 function initGame() {
-    questions = pickQuestions();
+    correctPlacementPlan = buildCorrectPlacementPlan();
+    questions = pickQuestions().map((question, index) => placeCorrectAnswer(question, correctPlacementPlan[index]));
     currentQuestionIndex = 0;
     score = 0;
     selectedCar = 0;
     carProgress = [0, 0, 0];
     isAnswering = false;
+    waitingNextQuestion = false;
+    setNextButtonEnabled(false);
     updateRoad();
     const overlay = document.getElementById('finishOverlay');
     overlay.classList.remove('visible');
@@ -196,22 +310,27 @@ function initGame() {
     renderQuestion();
 }
 
+function overlayVisible() {
+    const overlay = document.getElementById('finishOverlay');
+    return overlay.classList.contains('visible');
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     const restartButton = document.getElementById('restartButton');
     const playAgainButton = document.getElementById('playAgainButton');
+    const speakButton = document.getElementById('speakGuide');
+    const nextQuestionButton = document.getElementById('nextQuestionButton');
 
     restartButton.addEventListener('click', initGame);
     playAgainButton.addEventListener('click', initGame);
+    speakButton.addEventListener('click', speakGuide);
+    nextQuestionButton.addEventListener('click', goToNextQuestion);
 
     ANSWER_IDS.forEach((id, index) => {
-        document.getElementById(id).addEventListener('click', () => {
-            selectedCar = index;
-            highlightSelectedCar();
-            answerQuestion();
-        });
+        document.getElementById(id).addEventListener('click', () => answerQuestion(index));
     });
 
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', event => {
         if (overlayVisible()) return;
         if (event.key === 'w' || event.key === 'W' || event.key === 'ArrowUp') {
             event.preventDefault();
@@ -229,9 +348,5 @@ window.addEventListener('DOMContentLoaded', () => {
 
     initGame();
     window.addEventListener('resize', updateRoad);
+    setTimeout(speakGuide, 650);
 });
-
-function overlayVisible() {
-    const overlay = document.getElementById('finishOverlay');
-    return overlay.classList.contains('visible');
-}

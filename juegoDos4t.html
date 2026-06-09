@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <title>Juego Dos 4º Básico</title>
     <link rel="stylesheet" href="css/juegoDos4t.css">
+    <link rel="stylesheet" href="css/efectos4to.css">
 </head>
 <body>
 <main>
     <div class="page-header">
         <h1>Mayor o menor</h1>
         <p>Observa la recta numérica y elige con cuidado: tienes un intento por pregunta.</p>
+        <div class="voice-guide">
+            <p id="voiceGuideText">Lee la pregunta y mira dónde están los números en la recta numérica. El número mayor está más a la derecha y el menor está más a la izquierda. Elige solo cuando estés seguro.</p>
+            <button id="voiceGuideButton" class="voice-button" type="button">Altavoz</button>
+        </div>
     </div>
 
     <section class="game-panel">
@@ -37,12 +42,7 @@
         <div id="resultBox" class="result-box"></div>
     </section>
 </main>
+<script src="js/efectos4to.js"></script>
 <script src="js/juegoDos4t.js"></script>
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const audio = new Audio('sonidos/interfazLogin.mp3');
-        audio.play().catch(err => console.log('Error al reproducir sonido de entrada:', err));
-    });
-</script>
 </body>
 </html>
