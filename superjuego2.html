@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Superjuego Cubo Ordenador</title>
+    <link rel="icon"
+        href="img/icon.png">
+    <link rel="stylesheet" href="css/efectos4to.css">
+    <link rel="stylesheet" href="css/superjuego2.css">
+</head>
+<body>
+<main class="cube-layout">
+    <section class="game-shell">
+        <header class="hero-panel">
+            <span class="super-label">SuperJuego 2</span>
+            <h1>Cubo Ordenador</h1>
+            <div class="voice-guide cube-guide">
+                <p id="voiceGuideText">Mueve el cubo con A y D. Salta con W o Espacio. Toca una tarjeta para cargarla, acércate a un cuadro de respuesta y presiona E para dejarla.</p>
+                <button id="voiceGuideButton" class="voice-button" type="button">Altavoz</button>
+            </div>
+        </header>
+
+        <div class="hud">
+            <div class="challenge-card">
+                <span>Desafío</span>
+                <strong id="challengeText">Ordena los números</strong>
+            </div>
+            <div class="carry-card">
+                <span>Cargando</span>
+                <strong id="carryText">Nada</strong>
+            </div>
+            <div class="round-card">
+                <span>Ronda</span>
+                <strong id="roundText">1 / 5</strong>
+            </div>
+        </div>
+
+        <div id="world" class="world" aria-label="Juego de plataforma para ordenar números">
+            <div class="star-field" aria-hidden="true"></div>
+            <div class="platform ground"></div>
+            <div class="platform top-platform"></div>
+            <div class="platform left-platform"></div>
+            <div class="platform right-platform"></div>
+
+            <div class="drop-area">
+                <div class="drop-slot" data-slot="0"><span>1</span></div>
+                <div class="drop-slot" data-slot="1"><span>2</span></div>
+                <div class="drop-slot" data-slot="2"><span>3</span></div>
+            </div>
+
+            <div id="player" class="player-cube" aria-label="Cubo jugador"></div>
+            <div id="cardsLayer"></div>
+        </div>
+
+        <div id="feedback" class="feedback-panel">Busca la primera tarjeta y llévala a la zona 1.</div>
+
+        <div class="actions">
+            <button id="restartButton" class="button">Reiniciar desafío</button>
+            <button id="newRoundButton" class="button secondary">Nueva ronda</button>
+            <a class="link-box" href="lista.html">Volver a selección</a>
+        </div>
+    </section>
+</main>
+
+<div id="finishOverlay" class="finish-overlay" aria-hidden="true">
+    <div class="finish-card">
+        <div class="finish-badge">Superjuego completado</div>
+        <h2>¡Cubo campeón!</h2>
+        <p>Ordenaste los números saltando, cargando y pensando como crack.</p>
+        <div class="finish-actions">
+            <button id="playAgainButton" class="finish-button">Jugar otra vez</button>
+            <a class="link-box" href="lista.html">Volver a selección</a>
+        </div>
+    </div>
+</div>
+
+<audio id="pickupSound" src="sonidos/click.mp3" preload="auto"></audio>
+<audio id="correctSound" src="sonidos/bien.mp3" preload="auto"></audio>
+<audio id="errorSound" src="sonidos/error4TO.mp3" preload="auto"></audio>
+<script src="js/efectos4to.js"></script>
+<script src="js/superjuego2.js"></script>
+</body>
+</html>

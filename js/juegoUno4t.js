@@ -1,3 +1,21 @@
+const ROUND_TOTAL = 4;
+
+const numerosSets = [
+    [104, 315, 682, 1289],
+    [432, 1293, 2795, 4020],
+    [707, 228, 1003, 951],
+    [6235, 4289, 7201, 10000],
+    [889, 1777, 2789, 3254],
+    [98, 1000, 5099, 8102]
+];
+
+let gameState = {
+    round: 1,
+    hadMistake: false,
+    tilePool: null,
+    dropArea: null
+};
+
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -25,7 +43,7 @@ function mostrarMensaje(text, correcto) {
     resultBox.textContent = text;
     resultBox.className = 'result-box';
     if (!correcto) resultBox.classList.add('error');
-    
+
     if (correcto) {
         reproducirAudio('bien.mp3');
         window.FourthGradeTools?.burstConfetti(90);
@@ -40,32 +58,26 @@ function crearTarjeta(numero, index) {
     card.textContent = formatNumber(numero);
     card.dataset.value = numero;
     card.setAttribute('draggable', 'true');
-    card.id = `tile-${index}`;
+    card.id = `tile-${gameState.round}-${index}`;
     card.addEventListener('dragstart', event => {
         event.dataTransfer.setData('text/plain', card.id);
     });
     return card;
 }
 
-const numerosSets = [
-    [104, 315, 682, 1289],
-    [432, 1293, 2795, 4020],
-    [707, 228, 1003, 951],
-    [6235, 4289, 7201, 10000],
-    [889, 1777, 2789, 3254],
-    [98, 1000, 5099, 8102]
-];
-
-let gameState = {};
-
-function initJuego() {
+function initJuego(resetRounds = false) {
     const tilePool = document.getElementById('tilePool');
     const dropArea = document.getElementById('dropArea');
     const resultBox = document.getElementById('resultBox');
 
+    if (resetRounds) {
+        gameState.round = 1;
+        gameState.hadMistake = false;
+    }
+
     tilePool.innerHTML = '';
     dropArea.innerHTML = '';
-    resultBox.textContent = '';
+    resultBox.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}`;
 
     const numbers = [...numerosSets[Math.floor(Math.random() * numerosSets.length)]];
     shuffle(numbers).forEach((numero, index) => tilePool.appendChild(crearTarjeta(numero, index)));
@@ -98,6 +110,12 @@ function initJuego() {
     gameState.dropArea = dropArea;
 }
 
+function finishRounds() {
+    markCommonGameCompleted('1');
+    mostrarMensaje('¡Juego completo! Ordenaste correctamente las 4 rondas. Misión 1 completada.', true);
+    window.FourthGradeTools?.speakGameResult(!gameState.hadMistake);
+}
+
 function checkOrder() {
     const dropArea = gameState.dropArea;
     if (!dropArea) return;
@@ -105,23 +123,34 @@ function checkOrder() {
         const tile = zone.querySelector('.number-card');
         return tile ? Number(tile.dataset.value) : null;
     });
+
     if (selected.includes(null)) {
+        gameState.hadMistake = true;
         mostrarMensaje('Coloca todos los números en sus casillas primero.', false);
         return;
     }
+
     const esCorrecto = selected.every((num, index, arr) => index === 0 || num >= arr[index - 1]);
     const ordenCorrecto = [...selected].sort((a, b) => a - b).map(formatNumber).join(' < ');
-    if (esCorrecto) markCommonGameCompleted('1');
-    mostrarMensaje(
-        esCorrecto
-            ? `¡Muy bien! El orden es ${ordenCorrecto}. Misión 1 completada.`
-            : 'Intenta otra vez: el orden debe ir desde el número menor hasta el número mayor.',
-        esCorrecto
-    );
+
+    if (!esCorrecto) {
+        gameState.hadMistake = true;
+        mostrarMensaje('Intenta otra vez: el orden debe ir desde el número menor hasta el número mayor.', false);
+        return;
+    }
+
+    if (gameState.round >= ROUND_TOTAL) {
+        finishRounds();
+        return;
+    }
+
+    mostrarMensaje(`¡Muy bien! El orden es ${ordenCorrecto}. Pasas a la ronda ${gameState.round + 1}.`, true);
+    gameState.round += 1;
+    setTimeout(() => initJuego(false), 1200);
 }
 
 function resetGame() {
-    initJuego();
+    initJuego(true);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -132,5 +161,5 @@ window.addEventListener('DOMContentLoaded', () => {
     if (resetButton) resetButton.addEventListener('click', resetGame);
     window.FourthGradeTools?.setupVoiceGuide(document.getElementById('voiceGuideText')?.textContent, 'voiceGuideButton');
 
-    initJuego();
+    initJuego(true);
 });

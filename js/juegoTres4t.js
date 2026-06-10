@@ -1,3 +1,18 @@
+const ROUND_TOTAL = 3;
+
+const placeLabels = [
+    { label: 'Unidades de mil', value: 1000, short: 'UM' },
+    { label: 'Centenas', value: 100, short: 'C' },
+    { label: 'Decenas', value: 10, short: 'D' },
+    { label: 'Unidades', value: 1, short: 'U' }
+];
+
+let gameState = {
+    number: null,
+    round: 1,
+    hadMistake: false
+};
+
 function reproducirAudio(sonido) {
     const audio = new Audio(`sonidos/${sonido}`);
     audio.play().catch(err => console.log('Error al reproducir sonido:', err));
@@ -9,7 +24,7 @@ function mostrarMensaje(text, correcto) {
     resultBox.textContent = text;
     resultBox.className = 'result-box';
     if (!correcto) resultBox.classList.add('error');
-    
+
     if (correcto) {
         reproducirAudio('bien.mp3');
         window.FourthGradeTools?.burstConfetti(90);
@@ -34,22 +49,11 @@ function shuffle(array) {
     return array;
 }
 
-const placeLabels = [
-    { label: 'Unidades de mil', value: 1000, short: 'UM' },
-    { label: 'Centenas', value: 100, short: 'C' },
-    { label: 'Decenas', value: 10, short: 'D' },
-    { label: 'Unidades', value: 1, short: 'U' }
-];
-
-let gameState = {
-    number: null
-};
-
 function getDigits(number) {
     return String(number).padStart(4, '0').split('').map(Number);
 }
 
-function initJuego() {
+function initJuego(resetRounds = false) {
     const number = Math.floor(Math.random() * 9000) + 1000;
     const digits = getDigits(number);
     const table = document.getElementById('placeTable');
@@ -57,10 +61,15 @@ function initJuego() {
     const numberInput = document.getElementById('studentNumber');
     const resultBox = document.getElementById('resultBox');
 
+    if (resetRounds) {
+        gameState.round = 1;
+        gameState.hadMistake = false;
+    }
+
     numberInput.value = '';
-    resultBox.textContent = '';
+    resultBox.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}`;
     table.innerHTML = '';
-    questionLabel.textContent = 'Ordena mentalmente las posiciones y escribe el número que forman:';
+    questionLabel.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}: ordena mentalmente las posiciones y escribe el número que forman:`;
 
     const cells = placeLabels.map((place, index) => ({
         ...place,
@@ -97,21 +106,36 @@ function renderRepresentations(number, digits) {
     `;
 }
 
+function finishRounds() {
+    markCommonGameCompleted('3');
+    mostrarMensaje('¡Juego completo! Resolviste las 3 rondas de tabla posicional. Misión 3 completada.', true);
+    window.FourthGradeTools?.speakGameResult(!gameState.hadMistake);
+}
+
 function checkNumber() {
     const numberInput = document.getElementById('studentNumber');
     const answer = Number(numberInput.value.trim().replace(/\./g, ''));
     if (!answer) {
+        gameState.hadMistake = true;
         mostrarMensaje('Escribe un número para comprobar.', false);
         return;
     }
+
     const correcto = answer === gameState.number;
-    if (correcto) markCommonGameCompleted('3');
-    mostrarMensaje(
-        correcto
-            ? `¡Perfecto! Es el número ${formatNumber(gameState.number)}. Misión 3 completada.`
-            : 'Todavía no es correcto. Recuerda ordenar: unidades de mil, centenas, decenas y unidades.',
-        correcto
-    );
+    if (!correcto) {
+        gameState.hadMistake = true;
+        mostrarMensaje('Todavía no es correcto. Recuerda ordenar: unidades de mil, centenas, decenas y unidades.', false);
+        return;
+    }
+
+    if (gameState.round >= ROUND_TOTAL) {
+        finishRounds();
+        return;
+    }
+
+    mostrarMensaje(`¡Perfecto! Es el número ${formatNumber(gameState.number)}. Pasas a la ronda ${gameState.round + 1}.`, true);
+    gameState.round += 1;
+    setTimeout(() => initJuego(false), 1200);
 }
 
 function showWord() {
@@ -120,7 +144,7 @@ function showWord() {
 }
 
 function resetNumber() {
-    initJuego();
+    initJuego(true);
 }
 
 function leerNumero(numero) {
@@ -165,5 +189,5 @@ window.addEventListener('DOMContentLoaded', () => {
     if (resetButton) resetButton.addEventListener('click', resetNumber);
     window.FourthGradeTools?.setupVoiceGuide(document.getElementById('voiceGuideText')?.textContent, 'voiceGuideButton');
 
-    initJuego();
+    initJuego(true);
 });

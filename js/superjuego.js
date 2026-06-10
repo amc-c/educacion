@@ -280,6 +280,21 @@ function goToNextQuestion() {
     renderQuestion();
 }
 
+function goToFinalIfEverythingIsDone() {
+    const commonGamesDone = [1, 2, 3, 4].every(gameNumber => (
+        localStorage.getItem(`ma04_common_game_${gameNumber}`) === 'completed'
+    ));
+    const superGamesDone = localStorage.getItem('superjuego1_completado') === 'true'
+        && localStorage.getItem('superjuego2_completado') === 'true';
+
+    if (commonGamesDone && superGamesDone) {
+        localStorage.setItem('ma04_all_games_completed', 'true');
+        setTimeout(() => {
+            window.location.href = 'final.html';
+        }, 3600);
+    }
+}
+
 function finishGame() {
     const overlay = document.getElementById('finishOverlay');
     const finishText = document.getElementById('finishText');
@@ -290,7 +305,10 @@ function finishGame() {
     overlay.classList.add('visible');
     overlay.setAttribute('aria-hidden', 'false');
     window.FourthGradeTools?.startConfettiRain(5200, 240);
+    window.FourthGradeTools?.speakGameResult(score === TOTAL_QUESTIONS);
     localStorage.setItem('superjuego1_completado', 'true');
+    localStorage.setItem('superjuego1_puntaje', String(score));
+    goToFinalIfEverythingIsDone();
 }
 
 function initGame() {

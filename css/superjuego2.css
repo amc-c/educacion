@@ -1,0 +1,416 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    background:
+        radial-gradient(circle at 12% 12%, rgba(255, 241, 118, .4), transparent 22%),
+        radial-gradient(circle at 88% 8%, rgba(56, 189, 248, .36), transparent 24%),
+        linear-gradient(135deg, #312e81 0%, #0f766e 48%, #f97316 100%);
+    color: #172554;
+}
+
+.cube-layout {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px;
+}
+
+.game-shell {
+    border: 5px solid #fff176;
+    border-radius: 28px;
+    padding: 18px;
+    background: rgba(255, 255, 255, .95);
+    box-shadow: 0 24px 52px rgba(0,0,0,.28);
+}
+
+.hero-panel {
+    text-align: center;
+}
+
+.super-label {
+    display: inline-flex;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #111827;
+    color: #fff176;
+    font-weight: 900;
+}
+
+.hero-panel h1 {
+    margin: 8px 0 4px;
+    font-size: clamp(2.1rem, 6vw, 4.5rem);
+    color: #ffffff;
+    letter-spacing: 0;
+    text-shadow: 0 5px 0 #172554, 0 12px 24px rgba(0,0,0,.35);
+    animation: glowTitle 1.4s ease-in-out infinite;
+}
+
+.cube-guide {
+    margin-bottom: 14px;
+}
+
+.hud {
+    display: grid;
+    grid-template-columns: 1.4fr .8fr .6fr;
+    gap: 12px;
+    margin: 14px 0;
+}
+
+.challenge-card,
+.carry-card,
+.round-card,
+.feedback-panel {
+    border-radius: 20px;
+    border: 3px solid #38bdf8;
+    background: #eff6ff;
+    box-shadow: inset 0 -5px 0 rgba(37, 99, 235, .11);
+}
+
+.challenge-card,
+.carry-card,
+.round-card {
+    display: grid;
+    gap: 6px;
+    padding: 14px 16px;
+}
+
+.challenge-card span,
+.carry-card span,
+.round-card span {
+    color: #0369a1;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: .82rem;
+}
+
+.challenge-card strong,
+.carry-card strong,
+.round-card strong {
+    font-size: clamp(1rem, 2vw, 1.35rem);
+}
+
+.world {
+    position: relative;
+    overflow: hidden;
+    height: min(62vh, 560px);
+    min-height: 430px;
+    border: 5px solid #111827;
+    border-radius: 26px;
+    background:
+        linear-gradient(180deg, rgba(14, 165, 233, .20), rgba(15, 23, 42, .68)),
+        linear-gradient(135deg, #1e1b4b, #0f172a);
+    box-shadow: inset 0 0 42px rgba(0,0,0,.36);
+}
+
+.star-field {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,.85) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,241,118,.65) 1px, transparent 1px);
+    background-size: 56px 56px, 91px 91px;
+    opacity: .28;
+}
+
+.platform {
+    position: absolute;
+    height: 24px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #fef08a, #f97316);
+    border: 3px solid #fff7ed;
+    box-shadow: 0 9px 0 rgba(124,45,18,.5), 0 15px 24px rgba(0,0,0,.28);
+}
+
+.ground {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 38px;
+    border-radius: 0;
+}
+
+.top-platform {
+    width: 260px;
+    left: calc(50% - 130px);
+    top: 235px;
+}
+
+.left-platform {
+    width: 170px;
+    left: 40px;
+    top: 260px;
+}
+
+.right-platform {
+    width: 170px;
+    right: 40px;
+    top: 260px;
+}
+
+.player-cube {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    left: 60px;
+    top: 320px;
+    z-index: 6;
+    border-radius: 13px;
+    background: linear-gradient(145deg, #67e8f9, #2563eb 52%, #a855f7);
+    border: 3px solid #e0f2fe;
+    box-shadow:
+        0 0 18px rgba(103,232,249,.95),
+        0 14px 18px rgba(0,0,0,.32),
+        inset -8px -8px 16px rgba(30,64,175,.45),
+        inset 8px 8px 16px rgba(255,255,255,.32);
+}
+
+.player-cube::after {
+    content: "";
+    position: absolute;
+    inset: 8px 10px auto auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.72);
+}
+
+.number-card {
+    position: absolute;
+    z-index: 5;
+    width: 108px;
+    min-height: 58px;
+    display: grid;
+    place-items: center;
+    padding: 8px;
+    border-radius: 18px;
+    border: 4px solid #38bdf8;
+    background: linear-gradient(145deg, #ffffff, #fef08a);
+    color: #172554;
+    font-size: 1.38rem;
+    font-weight: 900;
+    box-shadow: 0 14px 26px rgba(0,0,0,.26);
+    transition: transform .18s ease, opacity .18s ease;
+}
+
+.number-card.carried {
+    opacity: .28;
+    transform: scale(.85);
+}
+
+.drop-area {
+    position: absolute;
+    left: 50%;
+    bottom: 112px;
+    z-index: 4;
+    display: flex;
+    gap: 12px;
+    transform: translateX(-50%);
+}
+
+.drop-slot {
+    position: relative;
+    width: 124px;
+    height: 76px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    border: 4px dashed #7dd3fc;
+    background: rgba(255,255,255,.88);
+    color: #172554;
+    font-size: 1.35rem;
+    font-weight: 900;
+}
+
+.drop-slot span {
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    font-size: .8rem;
+    color: #0369a1;
+}
+
+.drop-slot.filled {
+    border-style: solid;
+    background: linear-gradient(145deg, #dcfce7, #fef9c3);
+}
+
+.drop-slot.near {
+    border-color: #fff176;
+    box-shadow: 0 0 22px rgba(255, 241, 118, .92);
+    transform: translateY(-3px);
+}
+
+.drop-slot.wrong {
+    animation: shakeSlot .36s ease;
+    border-color: #ef4444;
+}
+
+.feedback-panel {
+    margin-top: 14px;
+    min-height: 56px;
+    padding: 15px 18px;
+    color: #155e31;
+    text-align: center;
+    font-size: 1.08rem;
+    font-weight: 900;
+}
+
+.feedback-panel.error {
+    border-color: #f87171;
+    background: #fff1f2;
+    color: #991b1b;
+}
+
+.actions,
+.finish-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.button,
+.link-box,
+.finish-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 48px;
+    padding: 12px 18px;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.button,
+.finish-button {
+    border: 0;
+    color: #fff;
+    background: linear-gradient(135deg, #f97316, #db2777);
+    box-shadow: 0 12px 22px rgba(219,39,119,.24);
+}
+
+.button.secondary {
+    background: linear-gradient(135deg, #22c55e, #0ea5e9);
+}
+
+.link-box {
+    color: #172554;
+    background: #fff;
+    border: 3px solid #2563eb;
+}
+
+.button:hover,
+.link-box:hover,
+.finish-button:hover {
+    transform: translateY(-2px) scale(1.03);
+}
+
+.finish-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    z-index: 3000;
+    background: rgba(15,23,42,.84);
+}
+
+.finish-overlay.visible {
+    display: flex;
+}
+
+.finish-card {
+    width: min(560px, 100%);
+    padding: 28px;
+    border-radius: 28px;
+    text-align: center;
+    background: #fff;
+    border: 5px solid #fff176;
+    box-shadow: 0 25px 55px rgba(0,0,0,.35);
+}
+
+.finish-badge {
+    display: inline-flex;
+    padding: 8px 14px;
+    border-radius: 999px;
+    color: #fff;
+    background: #16a34a;
+    font-weight: 900;
+}
+
+.finish-card h2 {
+    margin: 12px 0 8px;
+    color: #172554;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+}
+
+.finish-card p {
+    color: #1e293b;
+    font-weight: 800;
+}
+
+@keyframes glowTitle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.025); }
+}
+
+@keyframes shakeSlot {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}
+
+@media (max-width: 780px) {
+    .hud {
+        grid-template-columns: 1fr;
+    }
+
+    .world {
+        min-height: 480px;
+        height: 62vh;
+    }
+
+    .top-platform {
+        width: 190px;
+        left: calc(50% - 95px);
+        top: 230px;
+    }
+
+    .left-platform,
+    .right-platform {
+        width: 130px;
+    }
+
+    .left-platform {
+        left: 16px;
+    }
+
+    .right-platform {
+        right: 16px;
+    }
+
+    .number-card {
+        width: 94px;
+        font-size: 1.08rem;
+    }
+
+    .drop-area {
+        gap: 7px;
+    }
+
+    .drop-slot {
+        width: 92px;
+        height: 70px;
+        font-size: 1.02rem;
+    }
+}

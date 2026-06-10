@@ -1,8 +1,43 @@
 const COMMON_GAMES = ['1', '2', '3', '4'];
 const COMPLETED_PREFIX = 'ma04_common_game_';
+const SUPER_UNLOCK_SEEN_KEY = 'ma04_super_unlock_seen';
+const FINAL_COMPLETED_KEY = 'ma04_all_games_completed';
 
 function isGameCompleted(gameId) {
     return localStorage.getItem(`${COMPLETED_PREFIX}${gameId}`) === 'completed';
+}
+
+function isSuperGameCompleted(gameId) {
+    return localStorage.getItem(`superjuego${gameId}_completado`) === 'true';
+}
+
+function markFinalCompletedIfReady() {
+    const commonGamesDone = COMMON_GAMES.every(isGameCompleted);
+    const superGamesDone = isSuperGameCompleted('1') && isSuperGameCompleted('2');
+
+    if (commonGamesDone && superGamesDone) {
+        localStorage.setItem(FINAL_COMPLETED_KEY, 'true');
+        setTimeout(() => {
+            window.location.href = 'final.html';
+        }, 900);
+        return true;
+    }
+
+    return false;
+}
+
+function showSuperCards() {
+    document.querySelectorAll('[data-super-card]').forEach(superCard => {
+        superCard.style.display = 'block';
+        const gameId = superCard.dataset.gameCard === 'super1' ? '1' : '2';
+        const completed = isSuperGameCompleted(gameId);
+        const badge = superCard.querySelector('.mission-badge');
+
+        superCard.classList.toggle('is-completed', completed);
+        if (badge) {
+            badge.textContent = completed ? 'Completado' : 'Desbloqueado';
+        }
+    });
 }
 
 function updateProgressView() {
@@ -22,33 +57,25 @@ function updateProgressView() {
     });
 
     if (completed.length === COMMON_GAMES.length) {
-        unlock.classList.add('is-visible');
         progressText.textContent = '4 de 4 completadas';
+        showSuperCards();
+
+        if (markFinalCompletedIfReady()) return;
+        if (localStorage.getItem(SUPER_UNLOCK_SEEN_KEY) === 'true') return;
+
+        unlock.classList.add('is-visible');
         const audio = new Audio('sonidos/notificacion.mp3');
         audio.volume = 0.9;
         audio.play().catch(() => {
             // autoplay puede bloquearse en algunos navegadores
         });
 
-        // Mostrar tarjeta del superjuego
-        const superCard = document.querySelector('[data-game-card="super"]');
-        if (superCard) {
-            superCard.style.display = 'block';
-        }
-
         const closeButton = document.getElementById('closeUnlockButton');
-        const playButton = document.getElementById('playSuperButton');
-
         if (closeButton) {
             closeButton.addEventListener('click', () => {
+                localStorage.setItem(SUPER_UNLOCK_SEEN_KEY, 'true');
                 unlock.classList.remove('is-visible');
-            });
-        }
-
-        if (playButton) {
-            playButton.addEventListener('click', () => {
-                window.location.href = 'superjuego1.html';
-            });
+            }, { once: true });
         }
     }
 }

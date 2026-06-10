@@ -22,6 +22,13 @@
         }
     }
 
+    function speakGameResult(perfect) {
+        const text = perfect
+            ? 'Excelente, te fue super bien.'
+            : 'Te pudo haber ido mejor, pero vas muy bien. Intentalo de nuevo y veras que puedes lograrlo.';
+        setTimeout(() => speakText(text), 650);
+    }
+
     function getLayer() {
         let layer = document.querySelector('.confetti-layer');
         if (!layer) {
@@ -80,6 +87,7 @@
     window.FourthGradeTools = {
         speakText,
         setupVoiceGuide,
+        speakGameResult,
         burstConfetti,
         startConfettiRain
     };

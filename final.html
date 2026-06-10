@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final 4to Basico</title>
+    <link rel="icon" href="img/icon.png">
+    <link rel="stylesheet" href="css/efectos4to.css">
+    <link rel="stylesheet" href="css/final.css">
+</head>
+<body>
+    <main class="final-stage">
+        <section class="final-card" aria-labelledby="finalTitle">
+            <div class="stars" aria-hidden="true">
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+            </div>
+
+            <img id="finalAvatar" class="final-avatar" src="img/avatar1.png" alt="Avatar del estudiante">
+
+            <p class="final-kicker">Mision completada</p>
+            <h1 id="finalTitle">¡Felicitaciones!</h1>
+            <p class="final-message">
+                Terminaste todos los juegos de 4to basico y desbloqueaste la meta final.
+            </p>
+
+            <div class="score-board" aria-label="Puntaje de superjuegos">
+                <div class="score-item">
+                    <span>Superjuego carretera</span>
+                    <strong id="scoreSuper1">0 pts</strong>
+                </div>
+                <div class="score-item">
+                    <span>Superjuego cubo</span>
+                    <strong id="scoreSuper2">0 pts</strong>
+                </div>
+                <div class="score-item total-score">
+                    <span>Puntaje total</span>
+                    <strong id="scoreTotal">0 pts</strong>
+                </div>
+            </div>
+
+            <div class="final-actions">
+                <button id="celebrateButton" class="final-button celebration" type="button">Celebrar otra vez</button>
+                <a id="backToGamesButton" class="final-button" href="lista.html">Volver a juegos</a>
+                <a class="final-button secondary" href="index.html">Inicio</a>
+            </div>
+        </section>
+    </main>
+
+    <audio id="achievementSound" src="sonidos/login1ER.mp3" preload="auto"></audio>
+    <script src="js/efectos4to.js"></script>
+    <script src="js/final.js"></script>
+</body>
+</html>

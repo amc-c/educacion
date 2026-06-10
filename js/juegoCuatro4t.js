@@ -7,6 +7,7 @@ let gameState = {
     locked: false,
     pairsFound: 0,
     tries: 0,
+    mistakes: 0,
     seconds: 0,
     timerId: null,
     started: false
@@ -134,6 +135,7 @@ function checkPair() {
     reproducirAudio('error4TO.mp3');
     gameState.firstCard.classList.add('is-wrong');
     gameState.secondCard.classList.add('is-wrong');
+    gameState.mistakes += 1;
     mostrarMensaje('No son iguales. Míralos un momento y vuelve a intentar.', false);
 
     setTimeout(() => {
@@ -156,6 +158,7 @@ function finishGame() {
     stopTimer();
     markCommonGameCompleted('4');
     window.FourthGradeTools?.startConfettiRain(3600, 170);
+    window.FourthGradeTools?.speakText('Super bien.');
     const panel = document.querySelector('.game-panel');
     panel.classList.add('celebration');
     mostrarMensaje(`¡Juego completo! Encontraste los 8 pares en ${gameState.tries} intentos. Misión 4 completada.`);
@@ -173,6 +176,7 @@ function initGame() {
         locked: false,
         pairsFound: 0,
         tries: 0,
+        mistakes: 0,
         seconds: 0,
         timerId: null,
         started: false

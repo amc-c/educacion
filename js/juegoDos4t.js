@@ -1,3 +1,13 @@
+const ROUND_TOTAL = 5;
+
+let gameState = {
+    correctAnswer: null,
+    questionType: 'mayor',
+    hasAnswered: false,
+    round: 1,
+    hadMistake: false
+};
+
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -25,7 +35,7 @@ function mostrarMensaje(text, correcto) {
     resultBox.textContent = text;
     resultBox.className = 'result-box';
     if (!correcto) resultBox.classList.add('error');
-    
+
     if (correcto) {
         reproducirAudio('bien.mp3');
         window.FourthGradeTools?.burstConfetti(90);
@@ -33,12 +43,6 @@ function mostrarMensaje(text, correcto) {
         reproducirAudio('error4TO.mp3');
     }
 }
-
-let gameState = {
-    correctAnswer: null,
-    questionType: 'mayor',
-    hasAnswered: false
-};
 
 function createNumbers() {
     const numbers = new Set();
@@ -68,22 +72,27 @@ function renderNumberLine(numbers) {
     });
 }
 
-function initJuego() {
+function initJuego(resetRounds = false) {
     const questionType = Math.random() > 0.5 ? 'mayor' : 'menor';
     const numbers = createNumbers();
     const pregunta = document.getElementById('questionText');
     const answerArea = document.getElementById('answers');
     const resultBox = document.getElementById('resultBox');
 
+    if (resetRounds) {
+        gameState.round = 1;
+        gameState.hadMistake = false;
+    }
+
     answerArea.innerHTML = '';
-    resultBox.textContent = '';
+    resultBox.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}`;
     gameState.hasAnswered = false;
 
     if (questionType === 'mayor') {
-        pregunta.textContent = '¿Cuál es el número más grande?';
+        pregunta.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}: ¿Cuál es el número más grande?`;
         gameState.correctAnswer = Math.max(...numbers);
     } else {
-        pregunta.textContent = '¿Cuál es el número más pequeño?';
+        pregunta.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}: ¿Cuál es el número más pequeño?`;
         gameState.correctAnswer = Math.min(...numbers);
     }
     gameState.questionType = questionType;
@@ -97,6 +106,12 @@ function initJuego() {
         boton.addEventListener('click', () => answerQuestion(boton));
         answerArea.appendChild(boton);
     });
+}
+
+function finishRounds() {
+    markCommonGameCompleted('2');
+    mostrarMensaje('¡Juego completo! Terminaste las 5 preguntas rápidas. Misión 2 completada.', true);
+    window.FourthGradeTools?.speakGameResult(!gameState.hadMistake);
 }
 
 function answerQuestion(selectedButton) {
@@ -122,19 +137,28 @@ function answerQuestion(selectedButton) {
         }
     });
     selectedButton.classList.add(correcto ? 'selected-correct' : 'selected-wrong');
-    if (correcto) markCommonGameCompleted('2');
+
+    if (!correcto) gameState.hadMistake = true;
 
     mostrarMensaje(
         correcto
-            ? `¡Muy bien! ${formatNumber(gameState.correctAnswer)} es la respuesta correcta. Misión 2 completada. Orden: ${sorted}.`
+            ? `¡Muy bien! ${formatNumber(gameState.correctAnswer)} es la respuesta correcta. Orden: ${sorted}.`
             : `Esta vez no. La respuesta correcta era ${formatNumber(gameState.correctAnswer)}. ${ayuda} Orden: ${sorted}.`,
         correcto
     );
+
+    if (gameState.round >= ROUND_TOTAL) {
+        setTimeout(finishRounds, 1200);
+        return;
+    }
+
+    gameState.round += 1;
+    setTimeout(() => initJuego(false), 1500);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
     const newQuestionButton = document.getElementById('newQuestion');
-    if (newQuestionButton) newQuestionButton.addEventListener('click', initJuego);
+    if (newQuestionButton) newQuestionButton.addEventListener('click', () => initJuego(true));
     window.FourthGradeTools?.setupVoiceGuide(document.getElementById('voiceGuideText')?.textContent, 'voiceGuideButton');
-    initJuego();
+    initJuego(true);
 });
