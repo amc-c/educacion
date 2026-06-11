@@ -10,7 +10,9 @@ const placeLabels = [
 let gameState = {
     number: null,
     round: 1,
-    hadMistake: false
+    hadMistake: false,
+    roundResults: [],
+    currentRoundHadMistake: false
 };
 
 function reproducirAudio(sonido) {
@@ -21,7 +23,7 @@ function reproducirAudio(sonido) {
 function mostrarMensaje(text, correcto) {
     const resultBox = document.getElementById('resultBox');
     if (!resultBox) return;
-    resultBox.textContent = text;
+    resultBox.innerHTML = text;
     resultBox.className = 'result-box';
     if (!correcto) resultBox.classList.add('error');
 
@@ -64,6 +66,8 @@ function initJuego(resetRounds = false) {
     if (resetRounds) {
         gameState.round = 1;
         gameState.hadMistake = false;
+        gameState.roundResults = [];
+        gameState.currentRoundHadMistake = false;
     }
 
     numberInput.value = '';
@@ -108,7 +112,43 @@ function renderRepresentations(number, digits) {
 
 function finishRounds() {
     markCommonGameCompleted('3');
-    mostrarMensaje('¡Juego completo! Resolviste las 3 rondas de tabla posicional. Misión 3 completada.', true);
+    
+    let tableRows = gameState.roundResults.map(res => `
+        <tr style="border-bottom: 1px solid rgba(0,0,0,0.08);">
+            <td style="padding: 6px; font-weight: bold;">Ronda ${res.round}</td>
+            <td style="padding: 6px;">${res.correct ? '✅ Bien' : '❌ Mal'}</td>
+            <td style="padding: 6px; font-family: monospace; font-size: 0.95rem;">${res.correctAnswer}</td>
+        </tr>
+    `).join('');
+
+    const tableHtml = `
+        <div style="margin-top: 10px;">
+            <strong style="display: block; margin-bottom: 6px;">Resumen del juego:</strong>
+            <table style="width: 100%; border-collapse: collapse; text-align: left; background: rgba(255,255,255,0.6); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <thead>
+                    <tr style="background: rgba(0,0,0,0.05); border-bottom: 2px solid rgba(0,0,0,0.1);">
+                        <th style="padding: 8px;">Ronda</th>
+                        <th style="padding: 8px;">Resultado</th>
+                        <th style="padding: 8px;">Respuesta Correcta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    const resultBox = document.getElementById('resultBox');
+    if (resultBox) {
+        resultBox.innerHTML = `¡Juego completo! Misión 3 completada.<br>${tableHtml}`;
+        resultBox.className = 'result-box';
+    }
+    
+    reproducirAudio(gameState.hadMistake ? 'error4TO.mp3' : 'bien.mp3');
+    if (!gameState.hadMistake) {
+        window.FourthGradeTools?.burstConfetti(90);
+    }
     window.FourthGradeTools?.speakGameResult(!gameState.hadMistake);
 }
 
@@ -116,26 +156,40 @@ function checkNumber() {
     const numberInput = document.getElementById('studentNumber');
     const answer = Number(numberInput.value.trim().replace(/\./g, ''));
     if (!answer) {
-        gameState.hadMistake = true;
-        mostrarMensaje('Escribe un número para comprobar.', false);
+        const resultBox = document.getElementById('resultBox');
+        if (resultBox) {
+            resultBox.textContent = 'Escribe un número para comprobar.';
+            resultBox.className = 'result-box error';
+        }
         return;
     }
 
     const correcto = answer === gameState.number;
     if (!correcto) {
         gameState.hadMistake = true;
-        mostrarMensaje('Todavía no es correcto. Recuerda ordenar: unidades de mil, centenas, decenas y unidades.', false);
+        gameState.currentRoundHadMistake = true;
+        const resultBox = document.getElementById('resultBox');
+        if (resultBox) {
+            resultBox.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}`;
+            resultBox.className = 'result-box';
+        }
         return;
     }
+
+    gameState.roundResults.push({
+        round: gameState.round,
+        correct: !gameState.currentRoundHadMistake,
+        correctAnswer: formatNumber(gameState.number)
+    });
+    gameState.currentRoundHadMistake = false;
 
     if (gameState.round >= ROUND_TOTAL) {
         finishRounds();
         return;
     }
 
-    mostrarMensaje(`¡Perfecto! Es el número ${formatNumber(gameState.number)}. Pasas a la ronda ${gameState.round + 1}.`, true);
     gameState.round += 1;
-    setTimeout(() => initJuego(false), 1200);
+    setTimeout(() => initJuego(false), 300);
 }
 
 function showWord() {

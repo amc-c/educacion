@@ -21,6 +21,8 @@ let orderedNumbers = [];
 let carriedCard = null;
 let animationId = null;
 let mistakes = 0;
+let roundResults = [];
+let currentRoundHadMistake = false;
 
 const player = {
     x: 60,
@@ -261,21 +263,34 @@ function updateNearestSlotHighlight() {
 function validateOrder() {
     const selected = slots.map(slot => Number(slot.dataset.value));
     const correct = selected.every((value, index) => value === orderedNumbers[index]);
-    if (correct) {
-        playSound('correctSound');
-        window.FourthGradeTools?.burstConfetti(100);
-        if (round >= ROUND_TOTAL) {
-            finishGame();
-            return;
-        }
-        showFeedback('¡Correcto! Ordenaste los números. Presiona Nueva ronda para seguir.', true);
-        round += 1;
-    } else {
+    
+    // Determine relation symbol and format answers
+    const modeSymbol = mode === 'desc' ? ' > ' : ' < ';
+    const correctStr = orderedNumbers.map(formatNumber).join(modeSymbol);
+    const childStr = selected.map(formatNumber).join(modeSymbol);
+
+    if (!correct) {
         mistakes += 1;
-        playSound('errorSound');
-        slots.forEach(slot => slot.classList.add('wrong'));
-        showFeedback(`Ese no era el orden. Debía ser: ${orderedNumbers.map(formatNumber).join(mode === 'desc' ? ' > ' : ' < ')}. Intenta una nueva ronda.`, false);
     }
+
+    roundResults.push({
+        round: round,
+        correct: correct,
+        childAnswer: childStr,
+        correctAnswer: correctStr
+    });
+
+    if (round >= ROUND_TOTAL) {
+        setTimeout(finishGame, 1000);
+        return;
+    }
+
+    round += 1;
+    showFeedback('Preparando la siguiente ronda...', true);
+    
+    setTimeout(() => {
+        startRound(false);
+    }, 1200);
 }
 
 function goToFinalIfEverythingIsDone() {
@@ -294,9 +309,47 @@ function goToFinalIfEverythingIsDone() {
 }
 
 function finishGame() {
-    playSound('correctSound');
-    window.FourthGradeTools?.startConfettiRain(5200, 230);
+    playSound(mistakes === 0 ? 'correctSound' : 'errorSound');
+    if (mistakes === 0) {
+        window.FourthGradeTools?.startConfettiRain(5200, 230);
+    }
     window.FourthGradeTools?.speakGameResult(mistakes === 0);
+    
+    const finishText = document.getElementById('finishText');
+    if (finishText) {
+        let tableRows = roundResults.map(res => `
+            <tr style="border-bottom: 1px solid rgba(0,0,0,0.08);">
+                <td style="padding: 6px; font-weight: bold;">Ronda ${res.round}</td>
+                <td style="padding: 6px;">${res.correct ? '✅ Bien' : '❌ Mal'}</td>
+                <td style="padding: 6px; font-family: monospace; font-size: 0.95rem;">${res.childAnswer}</td>
+                <td style="padding: 6px; font-family: monospace; font-size: 0.95rem;">${res.correctAnswer}</td>
+            </tr>
+        `).join('');
+
+        const tableHtml = `
+            <div style="margin-top: 10px; max-height: 220px; overflow-y: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; background: rgba(255,255,255,0.7); border-radius: 10px; font-size: 0.85rem; color: #333;">
+                    <thead>
+                        <tr style="background: rgba(0,0,0,0.05); border-bottom: 2px solid rgba(0,0,0,0.1);">
+                            <th style="padding: 6px;">Ronda</th>
+                            <th style="padding: 6px;">Resultado</th>
+                            <th style="padding: 6px;">Tu respuesta</th>
+                            <th style="padding: 6px;">Respuesta Correcta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        const mistakesMsg = mistakes === 0 
+            ? '¡Excelente! Ordenaste los números sin errores.' 
+            : `Completado con ${mistakes} ${mistakes === 1 ? 'error' : 'errores'}.`;
+        finishText.innerHTML = `${mistakesMsg}<br>${tableHtml}`;
+    }
+
     document.getElementById('finishOverlay').classList.add('visible');
     document.getElementById('finishOverlay').setAttribute('aria-hidden', 'false');
     localStorage.setItem('superjuego2_completado', 'true');
@@ -320,10 +373,61 @@ function loop() {
 function initGame(resetRoundNumber = false) {
     document.getElementById('finishOverlay').classList.remove('visible');
     document.getElementById('finishOverlay').setAttribute('aria-hidden', 'true');
-    if (resetRoundNumber) mistakes = 0;
+    if (resetRoundNumber) {
+        mistakes = 0;
+        roundResults = [];
+    }
+    currentRoundHadMistake = false;
     setupPlatforms();
     startRound(resetRoundNumber);
     if (!animationId) loop();
+}
+
+let bgMusic = null;
+let targetVolume = 0.35;
+let musicInterval = null;
+
+function playBgMusic() {
+    if (bgMusic) return;
+    bgMusic = new Audio('sonidos/selectKirby.mp3');
+    bgMusic.loop = true;
+    bgMusic.volume = targetVolume;
+    bgMusic.play().catch(err => {
+        console.log('Autoplay prevented, will play on interaction:', err);
+        const startOnInteraction = () => {
+            bgMusic.play().catch(() => {});
+            document.removeEventListener('click', startOnInteraction);
+            document.removeEventListener('keydown', startOnInteraction);
+        };
+        document.addEventListener('click', startOnInteraction);
+        document.addEventListener('keydown', startOnInteraction);
+    });
+
+    window.addEventListener('speechstart', () => {
+        fadeVolume(0.08);
+    });
+    window.addEventListener('speechend', () => {
+        fadeVolume(0.35);
+    });
+}
+
+function fadeVolume(target) {
+    targetVolume = target;
+    if (musicInterval) clearInterval(musicInterval);
+    
+    musicInterval = setInterval(() => {
+        if (!bgMusic) {
+            clearInterval(musicInterval);
+            return;
+        }
+        const diff = targetVolume - bgMusic.volume;
+        if (Math.abs(diff) < 0.01) {
+            bgMusic.volume = targetVolume;
+            clearInterval(musicInterval);
+        } else {
+            bgMusic.volume += Math.sign(diff) * 0.01;
+        }
+    }, 30);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -338,8 +442,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     window.FourthGradeTools?.setupVoiceGuide(document.getElementById('voiceGuideText')?.textContent, 'voiceGuideButton');
 
+    const newRoundBtn = document.getElementById('newRoundButton');
+    if (newRoundBtn) newRoundBtn.style.display = 'none';
     document.getElementById('restartButton').addEventListener('click', () => initGame(true));
-    document.getElementById('newRoundButton').addEventListener('click', () => startRound(false));
     document.getElementById('playAgainButton').addEventListener('click', () => initGame(true));
 
     window.addEventListener('keydown', event => {
@@ -364,4 +469,5 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     initGame(true);
+    playBgMusic();
 });

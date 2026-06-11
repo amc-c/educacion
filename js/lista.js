@@ -70,6 +70,15 @@ function updateProgressView() {
             // autoplay puede bloquearse en algunos navegadores
         });
 
+        const playSuperButton = document.getElementById('playSuperButton');
+        if (playSuperButton) {
+            playSuperButton.addEventListener('click', () => {
+                localStorage.setItem(SUPER_UNLOCK_SEEN_KEY, 'true');
+                unlock.classList.remove('is-visible');
+                window.location.href = 'superjuego1.html';
+            }, { once: true });
+        }
+
         const closeButton = document.getElementById('closeUnlockButton');
         if (closeButton) {
             closeButton.addEventListener('click', () => {

@@ -5,7 +5,8 @@ let gameState = {
     questionType: 'mayor',
     hasAnswered: false,
     round: 1,
-    hadMistake: false
+    hadMistake: false,
+    roundResults: []
 };
 
 function shuffle(array) {
@@ -32,7 +33,7 @@ function reproducirAudio(sonido) {
 function mostrarMensaje(text, correcto) {
     const resultBox = document.getElementById('resultBox');
     if (!resultBox) return;
-    resultBox.textContent = text;
+    resultBox.innerHTML = text;
     resultBox.className = 'result-box';
     if (!correcto) resultBox.classList.add('error');
 
@@ -82,6 +83,7 @@ function initJuego(resetRounds = false) {
     if (resetRounds) {
         gameState.round = 1;
         gameState.hadMistake = false;
+        gameState.roundResults = [];
     }
 
     answerArea.innerHTML = '';
@@ -110,7 +112,43 @@ function initJuego(resetRounds = false) {
 
 function finishRounds() {
     markCommonGameCompleted('2');
-    mostrarMensaje('¡Juego completo! Terminaste las 5 preguntas rápidas. Misión 2 completada.', true);
+    
+    let tableRows = gameState.roundResults.map(res => `
+        <tr style="border-bottom: 1px solid rgba(0,0,0,0.08);">
+            <td style="padding: 6px; font-weight: bold;">Ronda ${res.round}</td>
+            <td style="padding: 6px;">${res.correct ? '✅ Bien' : '❌ Mal'}</td>
+            <td style="padding: 6px; font-family: monospace; font-size: 0.95rem;">${res.correctAnswer}</td>
+        </tr>
+    `).join('');
+
+    const tableHtml = `
+        <div style="margin-top: 10px;">
+            <strong style="display: block; margin-bottom: 6px;">Resumen del juego:</strong>
+            <table style="width: 100%; border-collapse: collapse; text-align: left; background: rgba(255,255,255,0.6); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <thead>
+                    <tr style="background: rgba(0,0,0,0.05); border-bottom: 2px solid rgba(0,0,0,0.1);">
+                        <th style="padding: 8px;">Ronda</th>
+                        <th style="padding: 8px;">Resultado</th>
+                        <th style="padding: 8px;">Respuesta Correcta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    const resultBox = document.getElementById('resultBox');
+    if (resultBox) {
+        resultBox.innerHTML = `¡Juego completo! Misión 2 completada.<br>${tableHtml}`;
+        resultBox.className = 'result-box';
+    }
+    
+    reproducirAudio(gameState.hadMistake ? 'error4TO.mp3' : 'bien.mp3');
+    if (!gameState.hadMistake) {
+        window.FourthGradeTools?.burstConfetti(90);
+    }
     window.FourthGradeTools?.speakGameResult(!gameState.hadMistake);
 }
 
@@ -121,31 +159,27 @@ function answerQuestion(selectedButton) {
     const selectedValue = Number(selectedButton.dataset.value);
     const correcto = selectedValue === gameState.correctAnswer;
     const buttons = Array.from(document.querySelectorAll('.answer-button'));
-    const sorted = buttons
-        .map(button => Number(button.dataset.value))
-        .sort((a, b) => a - b)
-        .map(formatNumber)
-        .join(' < ');
-    const ayuda = gameState.questionType === 'mayor'
-        ? 'El mayor es el que queda más a la derecha en la recta numérica.'
-        : 'El menor es el que queda más a la izquierda en la recta numérica.';
 
     buttons.forEach(button => {
         button.disabled = true;
-        if (Number(button.dataset.value) === gameState.correctAnswer) {
-            button.classList.add('is-correct');
-        }
     });
-    selectedButton.classList.add(correcto ? 'selected-correct' : 'selected-wrong');
+    
+    // Neutral selection highlight using inline styles
+    selectedButton.style.background = 'linear-gradient(135deg, #7a52ff, #4f2dbf)';
+    selectedButton.style.color = '#ffffff';
 
     if (!correcto) gameState.hadMistake = true;
+    gameState.roundResults.push({
+        round: gameState.round,
+        correct: correcto,
+        correctAnswer: formatNumber(gameState.correctAnswer)
+    });
 
-    mostrarMensaje(
-        correcto
-            ? `¡Muy bien! ${formatNumber(gameState.correctAnswer)} es la respuesta correcta. Orden: ${sorted}.`
-            : `Esta vez no. La respuesta correcta era ${formatNumber(gameState.correctAnswer)}. ${ayuda} Orden: ${sorted}.`,
-        correcto
-    );
+    const resultBox = document.getElementById('resultBox');
+    if (resultBox) {
+        resultBox.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}`;
+        resultBox.className = 'result-box';
+    }
 
     if (gameState.round >= ROUND_TOTAL) {
         setTimeout(finishRounds, 1200);

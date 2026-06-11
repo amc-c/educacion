@@ -5,10 +5,23 @@
     function speakText(text) {
         if (!('speechSynthesis' in window) || !text) return;
         window.speechSynthesis.cancel();
+        window.dispatchEvent(new CustomEvent('speechend'));
+
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'es-CL';
         utterance.rate = 0.94;
         utterance.pitch = 1.08;
+
+        utterance.onstart = () => {
+            window.dispatchEvent(new CustomEvent('speechstart'));
+        };
+        utterance.onend = () => {
+            window.dispatchEvent(new CustomEvent('speechend'));
+        };
+        utterance.onerror = () => {
+            window.dispatchEvent(new CustomEvent('speechend'));
+        };
+
         window.speechSynthesis.speak(utterance);
     }
 

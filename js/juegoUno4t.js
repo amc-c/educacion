@@ -13,7 +13,10 @@ let gameState = {
     round: 1,
     hadMistake: false,
     tilePool: null,
-    dropArea: null
+    dropArea: null,
+    roundResults: [],
+    currentCorrectAnswer: "",
+    currentNumbers: []
 };
 
 function shuffle(array) {
@@ -37,28 +40,13 @@ function reproducirAudio(sonido) {
     audio.play().catch(err => console.log('Error al reproducir sonido:', err));
 }
 
-function mostrarMensaje(text, correcto) {
-    const resultBox = document.getElementById('resultBox');
-    if (!resultBox) return;
-    resultBox.textContent = text;
-    resultBox.className = 'result-box';
-    if (!correcto) resultBox.classList.add('error');
-
-    if (correcto) {
-        reproducirAudio('bien.mp3');
-        window.FourthGradeTools?.burstConfetti(90);
-    } else {
-        reproducirAudio('error4TO.mp3');
-    }
-}
-
 function crearTarjeta(numero, index) {
-    const card = document.createElement('button');
+    const card = document.createElement('div');
     card.className = 'number-card';
     card.textContent = formatNumber(numero);
     card.dataset.value = numero;
     card.setAttribute('draggable', 'true');
-    card.id = `tile-${gameState.round}-${index}`;
+    card.id = `tile-${index}`;
     card.addEventListener('dragstart', event => {
         event.dataTransfer.setData('text/plain', card.id);
     });
@@ -73,13 +61,20 @@ function initJuego(resetRounds = false) {
     if (resetRounds) {
         gameState.round = 1;
         gameState.hadMistake = false;
+        gameState.roundResults = [];
     }
 
     tilePool.innerHTML = '';
     dropArea.innerHTML = '';
     resultBox.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}`;
+    resultBox.className = 'result-box';
 
     const numbers = [...numerosSets[Math.floor(Math.random() * numerosSets.length)]];
+    gameState.currentNumbers = [...numbers];
+    // Store the correct sorted order for the summary table
+    const sorted = [...numbers].sort((a, b) => a - b);
+    gameState.currentCorrectAnswer = sorted.map(n => formatNumber(n)).join(' → ');
+
     shuffle(numbers).forEach((numero, index) => tilePool.appendChild(crearTarjeta(numero, index)));
 
     const zones = ['Menor', 'Segundo', 'Tercero', 'Mayor'];
@@ -112,41 +107,90 @@ function initJuego(resetRounds = false) {
 
 function finishRounds() {
     markCommonGameCompleted('1');
-    mostrarMensaje('¡Juego completo! Ordenaste correctamente las 4 rondas. Misión 1 completada.', true);
+    
+    let tableRows = gameState.roundResults.map(res => `
+        <tr style="border-bottom: 1px solid rgba(0,0,0,0.08);">
+            <td style="padding: 6px; font-weight: bold;">Ronda ${res.round}</td>
+            <td style="padding: 6px;">${res.correct ? '✅ Bien' : '❌ Mal'}</td>
+            <td style="padding: 6px; font-family: monospace; font-size: 0.85rem;">${res.childAnswer}</td>
+            <td style="padding: 6px; font-family: monospace; font-size: 0.85rem;">${res.correctAnswer}</td>
+        </tr>
+    `).join('');
+
+    const tableHtml = `
+        <div style="margin-top: 10px;">
+            <strong style="display: block; margin-bottom: 6px;">Resumen del juego:</strong>
+            <table style="width: 100%; border-collapse: collapse; text-align: left; background: rgba(255,255,255,0.6); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <thead>
+                    <tr style="background: rgba(0,0,0,0.05); border-bottom: 2px solid rgba(0,0,0,0.1);">
+                        <th style="padding: 8px;">Ronda</th>
+                        <th style="padding: 8px;">Resultado</th>
+                        <th style="padding: 8px;">Tu respuesta</th>
+                        <th style="padding: 8px;">Respuesta Correcta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    const resultBox = document.getElementById('resultBox');
+    if (resultBox) {
+        resultBox.innerHTML = `¡Juego completo! Misión 1 completada.<br>${tableHtml}`;
+        resultBox.className = 'result-box';
+    }
+    
+    reproducirAudio(gameState.hadMistake ? 'error4TO.mp3' : 'bien.mp3');
+    if (!gameState.hadMistake) {
+        window.FourthGradeTools?.burstConfetti(90);
+    }
     window.FourthGradeTools?.speakGameResult(!gameState.hadMistake);
 }
 
 function checkOrder() {
     const dropArea = gameState.dropArea;
     if (!dropArea) return;
-    const selected = Array.from(dropArea.querySelectorAll('.drop-zone')).map(zone => {
+
+    const zones = Array.from(dropArea.querySelectorAll('.drop-zone'));
+    const selected = zones.map(zone => {
         const tile = zone.querySelector('.number-card');
         return tile ? Number(tile.dataset.value) : null;
     });
 
+    // All slots must be filled before checking
     if (selected.includes(null)) {
-        gameState.hadMistake = true;
-        mostrarMensaje('Coloca todos los números en sus casillas primero.', false);
+        const resultBox = document.getElementById('resultBox');
+        if (resultBox) {
+            resultBox.textContent = 'Coloca todos los números en sus casillas primero.';
+            resultBox.className = 'result-box error';
+        }
         return;
     }
 
     const esCorrecto = selected.every((num, index, arr) => index === 0 || num >= arr[index - 1]);
-    const ordenCorrecto = [...selected].sort((a, b) => a - b).map(formatNumber).join(' < ');
+    const childAnswer = selected.map(n => formatNumber(n)).join(' → ');
 
     if (!esCorrecto) {
         gameState.hadMistake = true;
-        mostrarMensaje('Intenta otra vez: el orden debe ir desde el número menor hasta el número mayor.', false);
-        return;
     }
+
+    // Always record the result and advance — never block
+    gameState.roundResults.push({
+        round: gameState.round,
+        correct: esCorrecto,
+        childAnswer: childAnswer,
+        correctAnswer: gameState.currentCorrectAnswer
+    });
 
     if (gameState.round >= ROUND_TOTAL) {
         finishRounds();
         return;
     }
 
-    mostrarMensaje(`¡Muy bien! El orden es ${ordenCorrecto}. Pasas a la ronda ${gameState.round + 1}.`, true);
     gameState.round += 1;
-    setTimeout(() => initJuego(false), 1200);
+    setTimeout(() => initJuego(false), 300);
 }
 
 function resetGame() {
@@ -156,9 +200,23 @@ function resetGame() {
 window.addEventListener('DOMContentLoaded', () => {
     const checkButton = document.getElementById('checkOrder');
     const resetButton = document.getElementById('resetGame');
+    const tilePool = document.getElementById('tilePool');
 
     if (checkButton) checkButton.addEventListener('click', checkOrder);
     if (resetButton) resetButton.addEventListener('click', resetGame);
+    
+    if (tilePool) {
+        tilePool.addEventListener('dragover', event => {
+            event.preventDefault();
+        });
+        tilePool.addEventListener('drop', event => {
+            event.preventDefault();
+            const tileId = event.dataTransfer.getData('text/plain');
+            const tile = document.getElementById(tileId);
+            if (tile) tilePool.appendChild(tile);
+        });
+    }
+
     window.FourthGradeTools?.setupVoiceGuide(document.getElementById('voiceGuideText')?.textContent, 'voiceGuideButton');
 
     initJuego(true);

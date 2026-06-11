@@ -13,6 +13,7 @@ let isAnswering = false;
 let waitingNextQuestion = false;
 let carProgress = [0, 0, 0];
 let correctPlacementPlan = [];
+let roundResults = [];
 
 function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -199,6 +200,7 @@ function renderQuestion() {
         lane.dataset.correct = index === question.correctIndex ? 'true' : 'false';
         lane.disabled = false;
         lane.classList.remove('selected', 'correct', 'wrong', 'boost');
+        lane.style.boxShadow = '';
     });
     selectedCar = 0;
     highlightSelectedCar();
@@ -236,25 +238,24 @@ function answerQuestion(index = selectedCar) {
     const question = questions[currentQuestionIndex];
     const correct = selectedCar === question.correctIndex;
     const selectedLane = document.getElementById(ANSWER_IDS[selectedCar]);
-    const correctLane = document.getElementById(ANSWER_IDS[question.correctIndex]);
 
     ANSWER_IDS.forEach(id => {
         document.getElementById(id).disabled = true;
     });
 
+    // Neutral selection visual highlight (no correct/wrong classes)
+    selectedLane.style.boxShadow = 'inset 0 0 0 6px #7a52ff';
+
     if (correct) {
         score += 1;
         carProgress[selectedCar] += 1;
-        selectedLane.classList.add('correct', 'boost');
-        playSound('correctSound');
-        showFeedback('¡Correcto! Ese auto aceleró hacia la meta.', true);
-    } else {
-        selectedLane.classList.add('wrong');
-        correctLane.classList.add('correct');
-        playSound('errorSound');
-        showFeedback(`No era ese auto. La respuesta correcta era ${question.options[question.correctIndex]}.`, false);
     }
 
+    roundResults.push({
+        round: currentQuestionIndex + 1,
+        correct: correct,
+        correctAnswer: question.options[question.correctIndex]
+    });
     updateRoad();
     updateScoreBar();
 
@@ -262,15 +263,10 @@ function answerQuestion(index = selectedCar) {
     setNextButtonEnabled(true);
 
     if (currentQuestionIndex + 1 < TOTAL_QUESTIONS) {
-        showFeedback(
-            correct
-                ? '¡Correcto! Ese auto aceleró hacia la meta. Presiona “Siguiente pregunta” para continuar.'
-                : `No era ese auto. La respuesta correcta era ${question.options[question.correctIndex]}. Presiona “Siguiente pregunta” para continuar.`,
-            correct
-        );
+        showFeedback('Presiona “Siguiente pregunta” para continuar.', true);
     } else {
         setNextButtonEnabled(false);
-        setTimeout(finishGame, 900);
+        setTimeout(finishGame, 1000);
     }
 }
 
@@ -301,10 +297,41 @@ function finishGame() {
     const resultText = score === TOTAL_QUESTIONS
         ? '¡Excelente! Contestaste todas correctamente y ganaste la carrera.'
         : `Obtuviste ${score} de ${TOTAL_QUESTIONS}. Vuelve a correr para mejorar tu marca.`;
-    finishText.textContent = resultText;
+    
+    let tableRows = roundResults.map(res => `
+        <tr style="border-bottom: 1px solid rgba(0,0,0,0.08);">
+            <td style="padding: 4px; font-weight: bold;">Pág. ${res.round}</td>
+            <td style="padding: 4px;">${res.correct ? '✅ Bien' : '❌ Mal'}</td>
+            <td style="padding: 4px; font-family: monospace; font-size: 0.95rem;">${res.correctAnswer}</td>
+        </tr>
+    `).join('');
+
+    const tableHtml = `
+        <div style="margin-top: 10px; max-height: 180px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; background: rgba(255,255,255,0.7); border-radius: 10px; font-size: 0.85rem; color: #333;">
+                <thead>
+                    <tr style="background: rgba(0,0,0,0.05); border-bottom: 2px solid rgba(0,0,0,0.1);">
+                        <th style="padding: 6px;">Pregunta</th>
+                        <th style="padding: 6px;">Resultado</th>
+                        <th style="padding: 6px;">Respuesta Correcta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    finishText.innerHTML = `${resultText}<br>${tableHtml}`;
+    
     overlay.classList.add('visible');
     overlay.setAttribute('aria-hidden', 'false');
-    window.FourthGradeTools?.startConfettiRain(5200, 240);
+    
+    playSound(score === TOTAL_QUESTIONS ? 'correctSound' : 'errorSound');
+    if (score === TOTAL_QUESTIONS) {
+        window.FourthGradeTools?.startConfettiRain(5200, 240);
+    }
     window.FourthGradeTools?.speakGameResult(score === TOTAL_QUESTIONS);
     localStorage.setItem('superjuego1_completado', 'true');
     localStorage.setItem('superjuego1_puntaje', String(score));
@@ -320,6 +347,7 @@ function initGame() {
     carProgress = [0, 0, 0];
     isAnswering = false;
     waitingNextQuestion = false;
+    roundResults = [];
     setNextButtonEnabled(false);
     updateRoad();
     const overlay = document.getElementById('finishOverlay');
@@ -331,6 +359,53 @@ function initGame() {
 function overlayVisible() {
     const overlay = document.getElementById('finishOverlay');
     return overlay.classList.contains('visible');
+}
+
+let bgMusic = null;
+let targetVolume = 0.35;
+let musicInterval = null;
+
+function playBgMusic() {
+    if (bgMusic) return;
+    bgMusic = new Audio('sonidos/1-10. Friend Puzzle Solving.mp3');
+    bgMusic.loop = true;
+    bgMusic.volume = targetVolume;
+    bgMusic.play().catch(err => {
+        console.log('Autoplay prevented, will play on interaction:', err);
+        const startOnInteraction = () => {
+            bgMusic.play().catch(() => {});
+            document.removeEventListener('click', startOnInteraction);
+            document.removeEventListener('keydown', startOnInteraction);
+        };
+        document.addEventListener('click', startOnInteraction);
+        document.addEventListener('keydown', startOnInteraction);
+    });
+
+    window.addEventListener('speechstart', () => {
+        fadeVolume(0.08);
+    });
+    window.addEventListener('speechend', () => {
+        fadeVolume(0.35);
+    });
+}
+
+function fadeVolume(target) {
+    targetVolume = target;
+    if (musicInterval) clearInterval(musicInterval);
+    
+    musicInterval = setInterval(() => {
+        if (!bgMusic) {
+            clearInterval(musicInterval);
+            return;
+        }
+        const diff = targetVolume - bgMusic.volume;
+        if (Math.abs(diff) < 0.01) {
+            bgMusic.volume = targetVolume;
+            clearInterval(musicInterval);
+        } else {
+            bgMusic.volume += Math.sign(diff) * 0.01;
+        }
+    }, 30);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -367,4 +442,5 @@ window.addEventListener('DOMContentLoaded', () => {
     initGame();
     window.addEventListener('resize', updateRoad);
     setTimeout(speakGuide, 650);
+    playBgMusic();
 });
