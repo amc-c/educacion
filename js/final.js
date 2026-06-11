@@ -47,6 +47,17 @@ function initFinalPage() {
     setText('scoreSuper2', `${scoreSuper2} pts`);
     setText('scoreTotal', `${totalScore} pts`);
 
+    const starsContainer = document.querySelector('.stars');
+    if (starsContainer) {
+        if (totalScore >= 12) {
+            starsContainer.innerHTML = '<span>★</span><span>★</span><span>★</span>';
+        } else if (totalScore >= 8) {
+            starsContainer.innerHTML = '<span>★</span><span>★</span>';
+        } else {
+            starsContainer.innerHTML = '<span>★</span>';
+        }
+    }
+
     playAchievement();
     celebrateButton?.addEventListener('click', playAchievement);
     backToGamesButton?.addEventListener('click', resetSuperGamesForReplay);

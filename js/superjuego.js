@@ -285,9 +285,6 @@ function goToFinalIfEverythingIsDone() {
 
     if (commonGamesDone && superGamesDone) {
         localStorage.setItem('ma04_all_games_completed', 'true');
-        setTimeout(() => {
-            window.location.href = 'final.html';
-        }, 3600);
     }
 }
 
@@ -437,6 +434,21 @@ window.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             answerQuestion();
         }
+    });
+
+    document.querySelectorAll('a[href="lista.html"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const commonGamesDone = [1, 2, 3, 4].every(gameNumber => (
+                localStorage.getItem(`ma04_common_game_${gameNumber}`) === 'completed'
+            ));
+            const superGamesDone = localStorage.getItem('superjuego1_completado') === 'true'
+                && localStorage.getItem('superjuego2_completado') === 'true';
+            
+            if (commonGamesDone && superGamesDone) {
+                e.preventDefault();
+                window.location.href = 'final.html';
+            }
+        });
     });
 
     initGame();
