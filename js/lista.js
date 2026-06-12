@@ -56,12 +56,38 @@ function updateProgressView() {
         badge.textContent = isCompleted ? 'Completado' : 'Pendiente';
     });
 
+    const persistentlyUnlocked = localStorage.getItem('ma04_super_unlocked_persist') === 'true';
+    if (persistentlyUnlocked) {
+        showSuperCards();
+    }
+
     if (completed.length === COMMON_GAMES.length) {
+        localStorage.setItem('ma04_super_unlocked_persist', 'true');
         progressText.textContent = '4 de 4 completadas';
         showSuperCards();
 
         if (markFinalCompletedIfReady()) return;
         if (localStorage.getItem(SUPER_UNLOCK_SEEN_KEY) === 'true') return;
+
+        const nameSpan = document.getElementById('unlockStudentName');
+        if (nameSpan) {
+            nameSpan.textContent = localStorage.getItem('nombre') || 'campeón';
+        }
+
+        const score1 = localStorage.getItem('ma04_game_1_puntaje') || '0';
+        const score2 = localStorage.getItem('ma04_game_2_puntaje') || '0';
+        const score3 = localStorage.getItem('ma04_game_3_puntaje') || '0';
+        const score4 = localStorage.getItem('ma04_game_4_puntaje') || '0';
+
+        const s1El = document.getElementById('unlockScore1');
+        const s2El = document.getElementById('unlockScore2');
+        const s3El = document.getElementById('unlockScore3');
+        const s4El = document.getElementById('unlockScore4');
+
+        if (s1El) s1El.textContent = `${score1} / 4 pts`;
+        if (s2El) s2El.textContent = `${score2} / 5 pts`;
+        if (s3El) s3El.textContent = `${score3} / 3 pts`;
+        if (s4El) s4El.textContent = `${score4} / 5 pts`;
 
         unlock.classList.add('is-visible');
         const audio = new Audio('sonidos/notificacion.mp3');
@@ -75,7 +101,6 @@ function updateProgressView() {
             playSuperButton.addEventListener('click', () => {
                 localStorage.setItem(SUPER_UNLOCK_SEEN_KEY, 'true');
                 unlock.classList.remove('is-visible');
-                window.location.href = 'superjuego1.html';
             }, { once: true });
         }
 

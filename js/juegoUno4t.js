@@ -107,6 +107,8 @@ function initJuego(resetRounds = false) {
 
 function finishRounds() {
     markCommonGameCompleted('1');
+    const correctCount = gameState.roundResults.filter(res => res.correct).length;
+    localStorage.setItem('ma04_game_1_puntaje', String(correctCount));
     
     let tableRows = gameState.roundResults.map(res => `
         <tr style="border-bottom: 1px solid rgba(0,0,0,0.08);">

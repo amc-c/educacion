@@ -157,6 +157,13 @@ function clearSelection() {
 function finishGame() {
     stopTimer();
     markCommonGameCompleted('4');
+    let scoreVal = 1;
+    if (gameState.mistakes <= 3) scoreVal = 5;
+    else if (gameState.mistakes <= 6) scoreVal = 4;
+    else if (gameState.mistakes <= 10) scoreVal = 3;
+    else if (gameState.mistakes <= 15) scoreVal = 2;
+    localStorage.setItem('ma04_game_4_puntaje', String(scoreVal));
+
     window.FourthGradeTools?.startConfettiRain(3600, 170);
     window.FourthGradeTools?.speakText('Super bien.');
     const panel = document.querySelector('.game-panel');

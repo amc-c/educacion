@@ -110,13 +110,18 @@ function renderRepresentations(number, digits) {
     `;
 }
 
+
+
 function finishRounds() {
     markCommonGameCompleted('3');
+    const correctCount = gameState.roundResults.filter(res => res.correct).length;
+    localStorage.setItem('ma04_game_3_puntaje', String(correctCount));
     
     let tableRows = gameState.roundResults.map(res => `
         <tr style="border-bottom: 1px solid rgba(0,0,0,0.08);">
             <td style="padding: 6px; font-weight: bold;">Ronda ${res.round}</td>
             <td style="padding: 6px;">${res.correct ? '✅ Bien' : '❌ Mal'}</td>
+            <td style="padding: 6px; font-family: monospace; font-size: 0.95rem;">${res.childAnswer}</td>
             <td style="padding: 6px; font-family: monospace; font-size: 0.95rem;">${res.correctAnswer}</td>
         </tr>
     `).join('');
@@ -129,6 +134,7 @@ function finishRounds() {
                     <tr style="background: rgba(0,0,0,0.05); border-bottom: 2px solid rgba(0,0,0,0.1);">
                         <th style="padding: 8px;">Ronda</th>
                         <th style="padding: 8px;">Resultado</th>
+                        <th style="padding: 8px;">Tu respuesta</th>
                         <th style="padding: 8px;">Respuesta Correcta</th>
                     </tr>
                 </thead>
@@ -167,21 +173,14 @@ function checkNumber() {
     const correcto = answer === gameState.number;
     if (!correcto) {
         gameState.hadMistake = true;
-        gameState.currentRoundHadMistake = true;
-        const resultBox = document.getElementById('resultBox');
-        if (resultBox) {
-            resultBox.textContent = `Ronda ${gameState.round} de ${ROUND_TOTAL}`;
-            resultBox.className = 'result-box';
-        }
-        return;
     }
 
     gameState.roundResults.push({
         round: gameState.round,
-        correct: !gameState.currentRoundHadMistake,
+        correct: correcto,
+        childAnswer: formatNumber(answer),
         correctAnswer: formatNumber(gameState.number)
     });
-    gameState.currentRoundHadMistake = false;
 
     if (gameState.round >= ROUND_TOTAL) {
         finishRounds();
