@@ -49,6 +49,12 @@ function crearTarjeta(numero, index) {
     card.id = `tile-${index}`;
     card.addEventListener('dragstart', event => {
         event.dataTransfer.setData('text/plain', card.id);
+        reproducirAudio('click.mp3');
+        window.FourthGradeTools?.speakText(String(numero));
+    });
+    card.addEventListener('click', () => {
+        reproducirAudio('click.mp3');
+        window.FourthGradeTools?.speakText(String(numero));
     });
     return card;
 }

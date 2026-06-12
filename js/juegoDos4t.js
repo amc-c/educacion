@@ -69,6 +69,11 @@ function renderNumberLine(numbers) {
         marker.style.setProperty('--stem-height', `${126 - (index * 50)}px`);
         marker.textContent = formatNumber(numero);
         marker.title = `Número ${formatNumber(numero)}`;
+        marker.style.cursor = 'pointer';
+        marker.addEventListener('click', () => {
+            reproducirAudio('click.mp3');
+            window.FourthGradeTools?.speakText(String(numero));
+        });
         numberLine.appendChild(marker);
     });
 }
@@ -105,7 +110,11 @@ function initJuego(resetRounds = false) {
         boton.className = 'button answer-button';
         boton.textContent = formatNumber(numero);
         boton.dataset.value = numero;
-        boton.addEventListener('click', () => answerQuestion(boton));
+        boton.addEventListener('click', () => {
+            reproducirAudio('click.mp3');
+            window.FourthGradeTools?.speakText(String(numero));
+            answerQuestion(boton);
+        });
         answerArea.appendChild(boton);
     });
 }
